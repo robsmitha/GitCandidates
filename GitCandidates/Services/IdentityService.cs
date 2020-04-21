@@ -40,7 +40,7 @@ namespace CleanersNextDoor.Services
             .FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
 
 
-        public void SetIdentity(IAccessToken accessToken = null, Claim[] claims = null)
+        public void SetIdentity(IJWTAccessToken accessToken = null, Claim[] claims = null)
         {
             if (_httpContextAccessor?.HttpContext == null) return;
 
@@ -48,13 +48,13 @@ namespace CleanersNextDoor.Services
             _httpContextAccessor
                .HttpContext
                .Response
-               .Cookies.Delete("access_token");
+               .Cookies.Delete(IdentityConstants.JWT_ACCESS_TOKEN_COOKIE_KEY);
 
             //set clear authenticated flag
             _httpContextAccessor
                 .HttpContext
                 .Session
-                .Set("authenticated", false);
+                .Set(IdentityConstants.AUTHENTICATED_SESSION_KEY, false);
 
             if (accessToken != null)
             {
@@ -62,7 +62,7 @@ namespace CleanersNextDoor.Services
                 _httpContextAccessor
                    .HttpContext
                    .Response
-                   .Cookies.Append("access_token", JsonSerializer.Serialize(accessToken),
+                   .Cookies.Append(IdentityConstants.JWT_ACCESS_TOKEN_COOKIE_KEY, JsonSerializer.Serialize(accessToken),
                     new CookieOptions
                     {
                         HttpOnly = true,
@@ -73,7 +73,7 @@ namespace CleanersNextDoor.Services
                 _httpContextAccessor
                     .HttpContext
                     .Session
-                    .Set("authenticated", true);
+                    .Set(IdentityConstants.AUTHENTICATED_SESSION_KEY, true);
 
                 if (claims != null)
                 {

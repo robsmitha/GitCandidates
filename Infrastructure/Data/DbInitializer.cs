@@ -19,18 +19,18 @@ namespace Infrastructure.Data
             {
                 new UserStatusType
                 {
-                    Name = "Submitted / Unconfirmed",
-                    Description = "The user has signed up and needs to confirm their email."
+                    Name = "Submitted",
+                    Description = "The user has signed up and needs to confirm their email is active and receiving messages from the system."
                 },
                 new UserStatusType
                 {
                     Name = "Confirmed",
-                    Description = "The user has confirmed their email and is ready for consideration."
+                    Description = "The user has confirmed their email is active and is ready for opportunities."
                 },
                 new UserStatusType
                 {
-                    Name = "Closed",
-                    Description = "The user has been closed."
+                    Name = "Banned",
+                    Description = "The user has been banned from any opportunities."
                 }
             };
             context.UserStatusTypes.AddRange(userStatusTypes);

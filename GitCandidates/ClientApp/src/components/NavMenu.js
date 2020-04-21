@@ -2,42 +2,77 @@ import React, { Component } from 'react';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
+import { AuthConsumer } from './../context/AuthContext'
 
 export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+    static displayName = NavMenu.name;
 
-  constructor (props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
+        this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.state = {
+            collapsed: true
+        };
+    }
 
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
+    toggleNavbar() {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
+    }
 
-  render () {
-    return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
-          <Container>
-            <NavbarBrand tag={Link} to="/">GitCandidates</NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-              <ul className="navbar-nav flex-grow">
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-                </NavItem>
-              </ul>
-            </Collapse>
-          </Container>
-        </Navbar>
-      </header>
-    );
-  }
+    componentDidMount() {
+        this.configureUI()
+    }
+
+    configureUI() {
+        var navbar = document.querySelector('.main-nav').clientHeight;
+        document.querySelector('.header').style = 'padding-top: ' + navbar + 'px';
+    }
+
+    render() {
+        return (
+            <header className="header">
+                <AuthConsumer>
+                    {({ auth }) => (
+                        <header>
+                            <Navbar className="main-nav navbar-expand-sm navbar-toggleable-sm box-shadow fixed-top bg-white border-bottom shadow-sm navbar-light">
+                                <Container>
+                                    <NavbarBrand tag={Link} to="/">
+                                        GitCandidates
+                                    </NavbarBrand>
+                                    <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
+                                    <Collapse isOpen={!this.state.collapsed} navbar>
+                                        <ul className="navbar-nav">
+                                            <NavItem>
+                                                <NavLink tag={Link} to="/">Home</NavLink>
+                                            </NavItem>
+                                        </ul>
+                                        <ul className="navbar-nav ml-auto">
+                                            <NavItem hidden={auth}>
+                                                <NavLink tag={Link} to="/oauth">
+                                                    Sign in with GitHub
+                                                </NavLink>
+                                            </NavItem>
+                                            <NavItem hidden={!auth}>
+                                                <NavLink tag={Link} to="/account">
+                                                    Account
+                                                </NavLink>
+                                            </NavItem>
+                                            <NavItem hidden={!auth}>
+                                                <NavLink tag={Link} to="/sign-out">
+                                                    Sign out
+                                                </NavLink>
+                                            </NavItem>
+                                        </ul>
+                                    </Collapse>
+                                </Container>
+                            </Navbar>
+                        </header>
+                    )}
+                </AuthConsumer>
+            </header>
+        );
+    }
 }

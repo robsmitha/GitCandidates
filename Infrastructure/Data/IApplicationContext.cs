@@ -10,7 +10,6 @@ namespace Infrastructure.Data
 {
     public interface IApplicationContext
     {
-        public DbSet<UserToken> UserTokens { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserStatusType> UserStatusTypes { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

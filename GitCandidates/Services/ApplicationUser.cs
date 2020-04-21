@@ -7,11 +7,11 @@ namespace GitCandidates.Services
 {
     public class ApplicationUser : IApplicationUser
     {
-        public bool authenticated { get; set; }
+        public bool auth { get; set; }
         public ApplicationUser() { }
         public ApplicationUser(bool auth)
         {
-            authenticated = auth;
+            this.auth = auth;
         }
     }
 }

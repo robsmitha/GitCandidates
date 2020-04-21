@@ -23,6 +23,6 @@ namespace Infrastructure.Identity
         /// </summary>
         /// <param name="accessToken">jwt access token</param>
         /// <param name="claims">claims to refresh the current principle</param>
-        void SetIdentity(IAccessToken accessToken = null, Claim[] claims = null);
+        void SetIdentity(IJWTAccessToken accessToken = null, Claim[] claims = null);
     }
 }

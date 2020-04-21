@@ -25,7 +25,7 @@ namespace CleanersNextDoor.Common
             var cookie = context.Request.Cookies[authenticationCookieName];
             if (cookie != null && !string.IsNullOrEmpty(cookie))
             {
-                var token = JsonSerializer.Deserialize<AccessToken>(cookie);
+                var token = JsonSerializer.Deserialize<JWTAccessToken>(cookie);
                 if (!string.IsNullOrWhiteSpace(token?.access_token) 
                     && DateTime.TryParse(token.expires_in, out var expiry) 
                     && expiry > DateTime.Now)

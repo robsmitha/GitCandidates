@@ -8,9 +8,10 @@ namespace GitCandidates.Services
 {
     public class AppSettings : IAppSettings
     {
-        public string Secret { get; set; }
+        public string JwtSecret { get; set; }
         public string JwtIssuer { get; set; }
-        public string StripeSecretKey { get; set; }
-        public string StripePublicKey { get; set; }
+        public string GitHubClientID { get; set; }
+        public string GitHubClientSecret { get; set; }
+        public string GitHubRedirectUrl { get; set; }
     }
 }

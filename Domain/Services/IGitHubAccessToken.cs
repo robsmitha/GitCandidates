@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Infrastructure.Identity
+namespace Domain.Services
 {
-    public interface IJWTAccessToken
+    public interface IGitHubAccessToken
     {
         string token_type { get; set; }
         string access_token { get; set; }
-        string expires_in { get; set; }
+        string scope { get; set; }
     }
 }

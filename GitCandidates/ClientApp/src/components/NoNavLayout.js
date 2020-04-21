@@ -1,26 +1,24 @@
-import React from 'react';
+﻿import React from 'react';
 import { Route } from 'react-router-dom';
-import { NavMenu } from './NavMenu';
 import { Footer } from './Footer';
 
 
 
-const Layout = ({ children }) => (
+const NoNavLayout = ({ children }) => (
     <div>
-        <NavMenu />
         {children}
         <Footer />
     </div>
 );
 
-const LayoutRoute = ({ component: Component, ...rest }) => {
+const NoNavLayoutRoute = ({ component: Component, ...rest }) => {
     return (
         <Route {...rest} render={matchProps => (
-            <Layout>
+            <NoNavLayout>
                 <Component {...matchProps} />
-            </Layout>
+            </NoNavLayout>
         )} />
     )
 }
 
-export default LayoutRoute;
+export default NoNavLayoutRoute;

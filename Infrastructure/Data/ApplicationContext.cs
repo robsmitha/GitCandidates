@@ -8,12 +8,10 @@ namespace Infrastructure.Data
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
-        public DbSet<UserToken> UserTokens { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserStatusType> UserStatusTypes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserToken>();
             modelBuilder.Entity<User>();
             modelBuilder.Entity<UserStatusType>();
 

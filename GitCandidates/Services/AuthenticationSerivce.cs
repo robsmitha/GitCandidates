@@ -1,19 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System;
-using System.Text.Json;
 using System.Threading;
 using Infrastructure.Identity;
 using Microsoft.Extensions.Options;
 using Infrastructure.Data;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Logging;
+using Domain.Services;
 
 namespace GitCandidates.Services
 {
@@ -33,16 +31,29 @@ namespace GitCandidates.Services
             _identity = identity;
         }
 
-        public async Task<IApplicationUser> CreateUser(User model, CancellationToken cancellationToken)
+        public async Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IGitHubAccessToken accessToken, CancellationToken cancellationToken)
         {
-            var user = new User
+            var user = _context.Users
+                .FirstOrDefault(u => u.GitHubUsername.ToLower() == gitHubUser.login.ToLower());
+
+            if (user != null)
             {
-                GitHubUsername  = model.GitHubUsername
-            };
-            _context.Users.Add(user);
+                user.GitHubToken = accessToken.access_token;    //update token
+                user.ModifiedTime = DateTime.Now;
+                _context.Users.Update(user);
+            }
+            else
+            {
+                var confirmed = _context.UserStatusTypes.FirstOrDefault(s => s.Name == "Submitted");
+                _context.Users.Add(new User
+                {
+                    GitHubUsername = gitHubUser.login,
+                    UserStatusTypeID = confirmed.ID,
+                    GitHubToken = accessToken.access_token
+                });
+            }
             await _context.SaveChangesAsync(cancellationToken);
-            var auth = IssueToken(user);
-            return new ApplicationUser(auth);
+            return new ApplicationUser(IssueJWTToken(user));
         }
 
         public void ClearAuthentication()
@@ -50,7 +61,7 @@ namespace GitCandidates.Services
             _identity.SetIdentity();
         }
 
-        public async Task<IApplicationUser> RefreshToken(IAccessToken accessToken)
+        public async Task<IApplicationUser> RefreshJWTToken(IJWTAccessToken accessToken)
         {
             try
             {
@@ -62,7 +73,7 @@ namespace GitCandidates.Services
                         .FindAsync(id);
 
                     if (customer?.ID > 0)
-                        return new ApplicationUser(IssueToken(customer));
+                        return new ApplicationUser(IssueJWTToken(customer));
                 }
             }
             catch (Exception) { }
@@ -72,12 +83,12 @@ namespace GitCandidates.Services
             return new ApplicationUser();
         }
 
-        private bool IssueToken(User user)
+        private bool IssueJWTToken(User user)
         {
             try
             {
                 var expires = DateTime.UtcNow.AddDays(7);
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Secret));
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JwtSecret));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
                 var claims = new[] {
                     new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
@@ -93,7 +104,7 @@ namespace GitCandidates.Services
                 var jwtToken = new JwtSecurityTokenHandler()
                     .WriteToken(token);
 
-                var accessToken = new AccessToken
+                var accessToken = new JWTAccessToken
                 {
                     access_token = jwtToken,
                     token_type = "",
@@ -133,7 +144,7 @@ namespace GitCandidates.Services
                     ValidateIssuerSigningKey = true,
                     ValidAudience = _appSettings.JwtIssuer,
                     ValidIssuer = _appSettings.JwtIssuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Secret))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JwtSecret))
                 };
 
                 var principal = new JwtSecurityTokenHandler()

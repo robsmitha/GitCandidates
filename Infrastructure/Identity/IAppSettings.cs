@@ -2,9 +2,10 @@
 {
     public interface IAppSettings
     {
-        string Secret { get; set; }
+        string JwtSecret { get; set; }
         string JwtIssuer { get; set; }
-        string StripeSecretKey { get; set; }
-        string StripePublicKey { get; set; }
+        string GitHubClientID { get; set; }
+        string GitHubClientSecret { get; set; }
+        string GitHubRedirectUrl { get; set; }
     }
 }

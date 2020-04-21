@@ -1,6 +1,7 @@
 using Application;
 using CleanersNextDoor.Common;
 using CleanersNextDoor.Services;
+using Domain.Services;
 using GitCandidates.Common;
 using GitCandidates.Services;
 using Infrastructure;
@@ -54,7 +55,7 @@ namespace GitCandidates
 
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -78,6 +79,7 @@ namespace GitCandidates
 
             services.AddScoped<IAuthenticationService, AuthenticationSerivce>();
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IGitHubService, GitHubService>();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
