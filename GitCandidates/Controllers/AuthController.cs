@@ -3,8 +3,9 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanersNextDoor.Common;
-using Domain.Services;
+using Domain.Services.GitHub.Interfaces;
 using GitCandidates.Services;
+using GitCandidates.Services.GitHub.Models;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -55,7 +56,7 @@ namespace GitCandidates.Controllers
             if(state != authParams.state) return BadRequest("Failed CSRF protection check.");
             var cancellationToken = new CancellationToken();
             var accessToken = await _github.GenerateOAuthAccessToken(authParams);
-            HttpContext.Session.Remove(IdentityConstants.OAUTH_STATE_SESSION_KEY); 
+            HttpContext.Session.Remove(IdentityConstants.OAUTH_STATE_SESSION_KEY);
             var gitHubUser = await _github.GetAuthenticatedUser(accessToken);
             return Ok(await _auth.AuthorizeUser(gitHubUser, accessToken, cancellationToken));
         }

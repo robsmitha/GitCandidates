@@ -2,6 +2,7 @@
 import { authService } from './../services/auth.service'
 import { Redirect, Link } from 'react-router-dom';
 import { AuthConsumer, AuthContext } from './../context/AuthContext';
+import Octicon, { Lock, Telescope } from '@primer/octicons-react';
 
 export class OAuthCallback extends Component {
 
@@ -63,14 +64,31 @@ export class OAuthCallback extends Component {
     renderLoading() {
         return (
             <div>
-                <p className="lead" hidden={!this.state.loading}>
-                    <span className="spinner-grow" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </span>
-                    Setting up your account..
-                </p>
-                <div hidden={this.state.loading}>
-                    Could not complete set up. Please&nbsp;<Link to='/'>try again.</Link>
+                <div className="vh-100 d-flex align-items-stretch py-5">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
+
+                                <div className="mb-4 text-center">
+                                    <Octicon icon={Telescope} size="medium" />&nbsp;
+                                    <span className="h3">
+                                            GitCandidates
+                                    </span>
+                                </div>
+                                <div className="text-center">
+                                    <p className="lead" hidden={!this.state.loading}>
+                                        <span className="spinner-grow" role="status">
+                                            <span className="sr-only">Loading...</span>
+                                        </span>
+                                        Authorizing your account..
+                                    </p>
+                                    <div hidden={this.state.loading}>
+                                        Could not complete set up. Please&nbsp;<Link to='/'>try again.</Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             )

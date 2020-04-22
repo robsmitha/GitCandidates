@@ -1,8 +1,8 @@
-﻿using Domain.Services;
+﻿using Domain.Services.GitHub.Interfaces;
 
-namespace GitCandidates.Services
+namespace GitCandidates.Services.GitHub.Models
 {
-    public class GitHubAccessToken : IGitHubAccessToken
+    public class AccessToken : IAccessToken
     {
         public string token_type { get; set; }
         public string access_token { get; set; }

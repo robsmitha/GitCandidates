@@ -1,15 +1,16 @@
 using Application;
 using CleanersNextDoor.Common;
 using CleanersNextDoor.Services;
-using Domain.Services;
+using CleanersNextDoor.Services.GitHub;
+using Domain.Services.GitHub.Interfaces;
 using GitCandidates.Common;
 using GitCandidates.Services;
+using GitCandidates.Services.GitHub;
 using Infrastructure;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,9 +78,10 @@ namespace GitCandidates
                 };
             });
 
-            services.AddScoped<IAuthenticationService, AuthenticationSerivce>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IGitHubService, GitHubService>();
+            services.AddScoped<IGitHubClient, GitHubClient>();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

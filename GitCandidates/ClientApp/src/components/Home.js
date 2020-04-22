@@ -29,7 +29,7 @@ export class Home extends Component {
     renderSignInMessage() {
         return (
             <div>
-                <p>Welcome, Candidate.</p>
+                <p>Welcome</p>
                 <small>Please <Link to="/oauth">sign in</Link></small>
             </div>
             )

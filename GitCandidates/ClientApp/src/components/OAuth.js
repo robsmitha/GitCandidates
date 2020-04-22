@@ -2,8 +2,9 @@
 import { authService } from './../services/auth.service'
 import TextInput from './../helpers/TextInput';
 import handleChange from './../helpers/HandleChange';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { AuthConsumer } from './../context/AuthContext';
+import Octicon, { Code, Search, Lock, Telescope } from '@primer/octicons-react'
 
 
 export class OAuth extends Component {
@@ -70,44 +71,84 @@ export class OAuth extends Component {
 
     renderOAuthForm() {
         return (
-
-            <div className="vh-100 d-flex align-items-stretch py-5">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                            <h1 className="h3 mb-4 text-center">
-                                GitCandidates
-                            </h1>
-                            <h2 className="h4 mb-2">Sign in with your GitHub account</h2>
-                            <form method="post" onSubmit={this.submitHandler}>
-
-                                <TextInput name="login"
-                                    placeholder={this.state.formControls.login.placeholder}
-                                    label={this.state.formControls.login.label}
-                                    value={this.state.formControls.login.value}
-                                    onChange={this.changeHandler}
-                                    touched={this.state.formControls.login.touched ? 1 : 0}
-                                    valid={this.state.formControls.login.valid ? 1 : 0}
-                                    errors={this.state.formControls.login.errors} />
-
-
-                                <div className="custom-control custom-checkbox">
-                                    <input type="checkbox" className="custom-control-input" id="staySignedIn" name="staySignedIn" onChange={this.changeHandler} checked={this.state.formControls.staySignedIn.value} />
-                                    <label className="custom-control-label" htmlFor="staySignedIn">
-                                        Stay signed in
-                                    </label>
+            <div>
+                <div className="container-fluid">
+                    <div className="row no-gutter">
+                        <div className="d-none d-md-block col-md-4 col-lg-6 bg-light border-right">
+                            <div className="vh-100 d-flex align-items-stretch py-5">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-md-9 col-lg-8 mx-auto">
+                                            <Octicon icon={Telescope} size="medium" />&nbsp;
+                                            <span className="h3">GitCandidates</span>
+                                            <p>
+                                                Finding the perfect job octo be easy.
+                                            </p>
+                                            <ol className="fa-ul list-unstyled">
+                                                <li className="mb-3">
+                                                    <Octicon icon={Lock} />
+                                                    <strong className="mb-2 ml-2">Secure GitHub access</strong>
+                                                    <small className="d-block ml-4">Enter your GitHub username to securely authenticate your GitHub account.</small>
+                                                </li>
+                                                <li className="mb-3">
+                                                    <Octicon icon={Search} />
+                                                    <strong className="mb-2 ml-2">Flexible search tools</strong>
+                                                    <small className="d-block ml-4">Browse job opportunities by company, languages, frameworks and more!</small>
+                                                </li>
+                                                <li className="mb-3">
+                                                    <Octicon icon={Code} />
+                                                    <strong className="mb-2 ml-2">See what you can do</strong>
+                                                    <small className="d-block ml-4">Each company puts out some repos related to the needs of the positions.</small>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div className="col-md-8 col-lg-6">
+                            <div className="vh-100 d-flex align-items-stretch py-5">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-md-9 col-lg-8 mx-auto">
+                                            <h1 className="h3">
+                                                Sign in with GitHub
+                                            </h1>
+                                            <p>Are you a company? <Link to="/" className="text-decoration-none">Sign in here.</Link></p>
 
-                                <button type="submit" disabled={!this.state.formIsValid} className="btn btn-dark btn-block my-3">
-                                    Sign in with GitHub
-                                </button>
+                                            <form method="post" onSubmit={this.submitHandler}>
 
-                                <p className="text-center mt-3 small text-muted">
-                                    Don't have an account? Just create one!
-                                </p>
-                                <button className="btn btn-link btn-block text-decoration-none" type="submit" onClick={this.submitHandler}>Continue to GitHub</button>
-                            </form>
-                           
+                                                <TextInput name="login"
+                                                    placeholder={this.state.formControls.login.placeholder}
+                                                    label={this.state.formControls.login.label}
+                                                    value={this.state.formControls.login.value}
+                                                    onChange={this.changeHandler}
+                                                    touched={this.state.formControls.login.touched ? 1 : 0}
+                                                    valid={this.state.formControls.login.valid ? 1 : 0}
+                                                    errors={this.state.formControls.login.errors} />
+
+
+                                                <div className="custom-control custom-checkbox">
+                                                    <input type="checkbox" className="custom-control-input" id="staySignedIn" name="staySignedIn" onChange={this.changeHandler} checked={this.state.formControls.staySignedIn.value} />
+                                                    <label className="custom-control-label" htmlFor="staySignedIn">
+                                                        Stay signed in
+                                                    </label>
+                                                </div>
+
+                                                <button type="submit" disabled={!this.state.formIsValid} className="btn btn-dark btn-block my-3">
+                                                    Sign in with GitHub
+                                                </button>
+
+                                                <p className="text-center text-muted">
+                                                    Don't have an account?
+                                                    <button className="btn btn-link btn-sm text-decoration-none pt-0 pl-1 small" type="submit" onClick={this.submitHandler}>Sign up.</button>
+                                                </p>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

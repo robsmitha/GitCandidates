@@ -1,11 +1,7 @@
-﻿using Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Domain.Services.GitHub.Interfaces;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace GitCandidates.Services
+namespace GitCandidates.Services.GitHub.Models
 {
     public class OAuthUrlParameters : IOAuthUrlParameters
     {

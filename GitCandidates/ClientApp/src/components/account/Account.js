@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { authService } from './../../services/auth.service'
+import { userService } from './../../services/user.service'
 import { Redirect, Link } from 'react-router-dom';
 import { AuthConsumer } from './../../context/AuthContext';
 
@@ -9,8 +9,13 @@ export class Account extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            loading: true
+            loading: true,
+            user: null
         }
+    }
+
+    componentDidMount() {
+        userService.getUser().then(data => this.setState({ user: data, loading: false}))
     }
 
     render() {
@@ -22,17 +27,31 @@ export class Account extends Component {
                         <div>
                             {!auth
                                 ? <Redirect to="/" />
-                                :this.renderAccount()}
+                                : this.renderLayout()}
                         </div>
                     )}
                 </AuthConsumer>
             </div>
         );
     }
-    renderAccount() {
+    renderLayout() {
+        let contents = this.state.loading
+            ? <p>Loading..</p>
+            : Account.renderUser(this.state.user)
         return (
             <div>
-                <p>My Account</p>
+                {contents}
+            </div>
+            )
+    }
+    static renderUser(user) {
+        return (
+            <div>
+                <div className="container">
+                    <h2>{user.name}</h2>
+                    <small className="d-block">{user.login}</small>
+                    <p>{user.bio}</p>
+                </div>
             </div>
             )
     }

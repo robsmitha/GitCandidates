@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.Services;
+﻿using Domain.Services.GitHub.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@ namespace Infrastructure.Identity
         /// <param name="accessToken"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IGitHubAccessToken accessToken, CancellationToken cancellationToken);
+        Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IAccessToken accessToken, CancellationToken cancellationToken);
 
         /// <summary>
         /// Refreshes JWT token cookie when user visits site

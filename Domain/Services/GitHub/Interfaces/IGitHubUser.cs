@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Services
+namespace Domain.Services.GitHub.Interfaces
 {
     public interface IGitHubUser
     {
@@ -15,5 +15,7 @@ namespace Domain.Services
         string location { get; set; }
         string email { get; set; }
         string bio { get; set; }
+        string organizations_url { get; set; }
+        string repos_url { get; set; }
     }
 }

@@ -1,8 +1,5 @@
-﻿using Domain.Entities;
-using System.Collections.Generic;
+﻿using Domain.Services.GitHub.Interfaces;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Identity
 {
@@ -19,10 +16,16 @@ namespace Infrastructure.Identity
         string GitHubUsername { get; }
 
         /// <summary>
+        /// Gets access token of authenticated user
+        /// </summary>
+        IAccessToken GitHubAccessToken { get; }
+
+        /// <summary>
         /// Sets/Replaces identity/authentication values in Cookies, Session and Claims
         /// </summary>
         /// <param name="accessToken">jwt access token</param>
         /// <param name="claims">claims to refresh the current principle</param>
-        void SetIdentity(IJWTAccessToken accessToken = null, Claim[] claims = null);
+        /// <param name="gitHubAccessToken">github access token</param>
+        void SetIdentity(IJWTAccessToken accessToken = null, Claim[] claims = null, IAccessToken gitHubAccessToken = null);
     }
 }

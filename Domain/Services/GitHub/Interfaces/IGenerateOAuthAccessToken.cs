@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Services
+namespace Domain.Services.GitHub.Interfaces
 {
     public interface IGenerateOAuthAccessToken
     {

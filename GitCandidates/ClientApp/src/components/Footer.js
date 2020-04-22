@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Octicon, { Telescope } from '@primer/octicons-react';
 
 export class Footer extends Component {
     static displayName = Footer.name;
@@ -17,6 +18,7 @@ export class Footer extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-12 col-md">
+                                <Octicon icon={Telescope} size="small" />&nbsp;
                                 <small className="mb-3 text-muted">
                                     GitCandidates&copy;{new Date().getFullYear()}
                                 </small>

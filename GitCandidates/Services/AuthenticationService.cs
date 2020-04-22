@@ -11,18 +11,19 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Logging;
-using Domain.Services;
+using Domain.Services.GitHub.Interfaces;
+using GitCandidates.Services.GitHub.Models;
 
 namespace GitCandidates.Services
 {
-    public class AuthenticationSerivce : IAuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IApplicationContext _context;
         private IAppSettings _appSettings;
 
         private readonly IIdentityService _identity;
 
-        public AuthenticationSerivce(IOptions<AppSettings> appSettings,
+        public AuthenticationService(IOptions<AppSettings> appSettings,
             IIdentityService identity,
             IApplicationContext context)
         {
@@ -31,7 +32,7 @@ namespace GitCandidates.Services
             _identity = identity;
         }
 
-        public async Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IGitHubAccessToken accessToken, CancellationToken cancellationToken)
+        public async Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IAccessToken accessToken, CancellationToken cancellationToken)
         {
             var user = _context.Users
                 .FirstOrDefault(u => u.GitHubUsername.ToLower() == gitHubUser.login.ToLower());
@@ -45,12 +46,13 @@ namespace GitCandidates.Services
             else
             {
                 var confirmed = _context.UserStatusTypes.FirstOrDefault(s => s.Name == "Submitted");
-                _context.Users.Add(new User
+                user = new User
                 {
                     GitHubUsername = gitHubUser.login,
                     UserStatusTypeID = confirmed.ID,
                     GitHubToken = accessToken.access_token
-                });
+                };
+                _context.Users.Add(user);
             }
             await _context.SaveChangesAsync(cancellationToken);
             return new ApplicationUser(IssueJWTToken(user));
@@ -69,11 +71,10 @@ namespace GitCandidates.Services
                 var id = GetClaimFromPrincipal<int>(claimsPrincipal, ClaimTypes.NameIdentifier);
                 if (id != default)
                 {
-                    var customer = await _context.Users
-                        .FindAsync(id);
+                    var user = await _context.Users.FindAsync(id);
 
-                    if (customer?.ID > 0)
-                        return new ApplicationUser(IssueJWTToken(customer));
+                    if (user?.ID > 0)
+                        return new ApplicationUser(IssueJWTToken(user));
                 }
             }
             catch (Exception) { }
@@ -110,8 +111,11 @@ namespace GitCandidates.Services
                     token_type = "",
                     expires_in = expires.ToString()
                 };
-
-                _identity.SetIdentity(accessToken, claims);
+                var gitHubAccessToken = new AccessToken
+                {
+                    access_token = user.GitHubToken
+                };
+                _identity.SetIdentity(accessToken, claims, gitHubAccessToken);
 
                 return true;
             }
