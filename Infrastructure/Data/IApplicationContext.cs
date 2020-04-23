@@ -12,6 +12,7 @@ namespace Infrastructure.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<UserStatusType> UserStatusTypes { get; set; }
+        public DbSet<Job> Jobs { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         int SaveChanges();
         public bool EnsureCreated();

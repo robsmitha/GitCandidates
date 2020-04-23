@@ -38,7 +38,7 @@ export class NavMenu extends Component {
                 <AuthConsumer>
                     {({ auth }) => (
                         <header>
-                            <Navbar className="main-nav navbar-expand-sm navbar-toggleable-sm box-shadow fixed-top bg-dark border-bottom shadow-sm navbar-dark">
+                            <Navbar className="main-nav navbar-expand-sm navbar-toggleable-sm box-shadow fixed-top bg-dark border-bottom border-dark shadow-sm navbar-dark">
                                 <Container>
                                     <NavbarBrand tag={Link} to="/">
                                         <Octicon icon={Telescope} size="medium" />&nbsp;

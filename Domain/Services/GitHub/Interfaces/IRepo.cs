@@ -9,5 +9,7 @@ namespace Domain.Services.GitHub.Interfaces
         int id { get; set; }
         string url { get; set; }
         string name { get; set; }
+        string description { get; set; }
+        string language { get; set; }
     }
 }

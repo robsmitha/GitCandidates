@@ -30,26 +30,5 @@ namespace Domain.Services.GitHub.Attributes
             public object value { get; set; }
             public string mapTo { get; set; }
         }
-        /// <summary>
-        /// Get expandable properties from an object by filtering class properties
-        /// </summary>
-        /// <param name="obj">object whose attributes to check</param>
-        /// <returns></returns>
-        public static Dictionary<string, MetaData> MapFromObject(object obj)
-        {
-            return obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(prop => IsDefined(prop, typeof(ExpandableAttribute)))
-                    .Select(prop =>
-                    {
-                        var attr = prop.GetCustomAttribute(typeof(ExpandableAttribute)) as ExpandableAttribute;
-                        return new MetaData
-                        {
-                            expand = attr.Expand,
-                            genericType = attr.Result,
-                            value = prop.GetValue(obj, null),
-                            mapTo = attr.MapTo
-                        };
-                    }).ToDictionary(data => data.expand, data => data);
-        }
     }
 }

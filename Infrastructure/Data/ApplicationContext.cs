@@ -10,10 +10,12 @@ namespace Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserStatusType> UserStatusTypes { get; set; }
+        public DbSet<Job> Jobs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>();
             modelBuilder.Entity<UserStatusType>();
+            modelBuilder.Entity<Job>();
 
             modelBuilder.Model.GetEntityTypes()
                 .SelectMany(e => e.GetForeignKeys())

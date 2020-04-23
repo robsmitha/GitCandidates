@@ -1,14 +1,35 @@
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+html {
+    height: 100%;
+    box-sizing: border-box;
 }
 
-code {
-  color: #E01A76;
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+body {
+    position: relative;
+    margin: 0;
+    padding-bottom: 6rem;
+    min-height: 100%;
+}
+
+.wrapper {
+    margin: 0 auto;
+    padding-bottom: 6rem;
+}
+
+/**
+  * Footer Styles
+  */
+
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
 }
