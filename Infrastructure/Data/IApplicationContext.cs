@@ -10,9 +10,11 @@ namespace Infrastructure.Data
 {
     public interface IApplicationContext
     {
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Job> Jobs { get; set; }
+        public DbSet<JobLocation> JobLocations { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserStatusType> UserStatusTypes { get; set; }
-        public DbSet<Job> Jobs { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
         int SaveChanges();
         public bool EnsureCreated();

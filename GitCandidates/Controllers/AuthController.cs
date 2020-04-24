@@ -70,7 +70,10 @@ namespace GitCandidates.Controllers
             if (!authenticated && token != null)
             {
                 var accessToken = JsonSerializer.Deserialize<JWTAccessToken>(token);
-                return await _auth.RefreshJWTToken(accessToken);
+                if(accessToken.expires_at > DateTime.Now)
+                {
+                    return await _auth.RefreshJWTToken(accessToken);
+                }
             }
             return new ApplicationUser(authenticated);
         }

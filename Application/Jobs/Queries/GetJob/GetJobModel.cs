@@ -8,13 +8,21 @@ namespace Application.Jobs.Queries.GetJob
 {
     public class GetJobModel : IMapFrom<Job>
     {
+        public GetJobModel()
+        {
+            Locations = new List<JobLocationModel>();
+        }
         public int ID { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Company { get; set; }
-        public string Location { get; set; }
-        public double Latitide { get; set; }
-        public double Longitude { get; set; }
+        public int CompanyID { get; set; }
+        public string CompanyGitHubLogin { get; set; }
+
+        /// <summary>
+        /// Job has multiple locations. If null, company address displays
+        /// </summary>
+        public List<JobLocationModel> Locations { get;set; }
+
     }
 }

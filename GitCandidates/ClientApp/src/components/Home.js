@@ -152,16 +152,23 @@ export class Home extends Component {
                     <div className="col-md-3 mb-4" key={j.id}>
                         <Link to={'/job/:id'.replace(':id', j.id)} className="text-decoration-none">
                             <div className="card h-100">
-                                <div className="card-body">
+                                <div className="card-body d-flex flex-column">
                                     <h5 className="card-title">{j.name}</h5>
-                                    <p className="d-block card-text text-dark">
-                                        {j.company}
-                                    </p>
+                                    <strong className="d-block card-text text-dark mb-1">
+                                        {j.companyGitHubLogin}
+                                    </strong>
                                     <small className="d-block text-muted">
-                                        {j.location}
+                                        {j.locations.map((l, index) =>
+                                            <span key={l.id}>
+                                                <span>{l.location}</span>
+                                                {index < j.locations.length - 1
+                                                    ? <span>,</span>
+                                                    : <span></span>}
+                                            </span>
+                                        )}
                                     </small>
-                                    <small className="text-muted">
-                                        Posted on {new Date(j.createdAt).toLocaleDateString()}
+                                    <small className="text-muted mt-auto">
+                                        {j.posted}
                                     </small>
                                 </div>
                             </div>

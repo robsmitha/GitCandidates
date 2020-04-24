@@ -22,13 +22,6 @@ namespace GitCandidates.Controllers
             _github = github;
             _mediator = mediator;
         }
-        public class SearchJobsRequest
-        {
-            public string keyword { get; set; }
-            public double? lat { get; set; }
-            public double? lng { get; set; }
-            public int? miles { get; set; }
-        }
 
         [HttpPost("GetJobs")]
         public async Task<ActionResult<List<GetJobsModel>>> GetJobs(SearchJobsRequest request)

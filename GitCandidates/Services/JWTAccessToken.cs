@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Identity;
+using System;
 
 namespace GitCandidates.Services
 {
@@ -6,8 +7,7 @@ namespace GitCandidates.Services
     {
         public string token_type { get; set; }
         public string access_token { get; set; }
-        public string expires_in { get; set; }
-        public string scope { get; set; }
+        public DateTime expires_at { get; set; }
     }
 
 }

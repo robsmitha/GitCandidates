@@ -1,13 +1,9 @@
 ﻿using System.Threading.Tasks;
-using CleanersNextDoor.Common;
 using Domain.Services.GitHub.Interfaces;
-using GitCandidates.Services;
 using GitCandidates.Services.GitHub.Models;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace GitCandidates.Controllers
 {

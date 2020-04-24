@@ -16,13 +16,13 @@ namespace Application.Jobs.Queries.GetJobs
         public string Keyword { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
-        public int? WithinXXMiles { get; set; }
-        public GetJobsQuery(string keyword = null, double? latitude = null, double? longitude = null, int? withinXXMiles = null)
+        public double Miles { get; set; }
+        public GetJobsQuery(string keyword = null, double? latitude = null, double? longitude = null, int? mi = null)
         {
             Keyword = keyword;
             Latitude = latitude;
             Longitude = longitude;
-            WithinXXMiles = withinXXMiles ?? 50;
+            Miles = mi ?? 50;
         }
     }
     public class GetJobsQueryHandler : IRequestHandler<GetJobsQuery, List<GetJobsModel>>
@@ -38,44 +38,25 @@ namespace Application.Jobs.Queries.GetJobs
             _context = context;
             _mapper = mapper;
         }
+
         public async Task<List<GetJobsModel>> Handle(GetJobsQuery request, CancellationToken cancellationToken)
         {
-            var jobs = await _context.Jobs
-                .Where(j => j.Active)
-                .ToListAsync();
+            var data = from j in _context.Jobs.AsEnumerable()
+                       join c in _context.Companies.AsEnumerable() on j.CompanyID equals c.ID
+                       join l in _context.JobLocations.AsEnumerable() on j.ID equals l.JobID
+                       where j.IsAvailable() && j.HasKeyword(request.Keyword) && l.WithinMiles(request.Latitude, request.Longitude, request.Miles)
+                       select new { j, l };
 
-            if (!string.IsNullOrEmpty(request.Keyword))
+            var map = new Dictionary<int, GetJobsModel>();
+            foreach (var d in data)
             {
-                jobs = jobs
-                    .Where(j => j.Name.ToLower().Contains(request.Keyword.ToLower()) 
-                    || j.Description.ToLower().Contains(request.Keyword.ToLower()))
-                    .ToList();
+                if (!map.ContainsKey(d.j.ID))
+                    map.Add(d.j.ID, _mapper.Map<GetJobsModel>(d.j));
+
+                map[d.j.ID].Locations.Add(_mapper.Map<JobLocationModel>(d.l));
             }
-
-            if(request.Latitude != null && request.Longitude != null)
-            {
-                jobs = jobs.Where(j => calculate(request.Latitude.Value, request.Longitude.Value, j.Latitide, j.Longitude) <= request.WithinXXMiles)  //todo: convert to miles
-                    .ToList();
-            }
-
-            return _mapper.Map<List<GetJobsModel>>(jobs);
-        }
-        public static double calculate(double lat1, double lon1, double lat2, double lon2)
-        {
-            var R = 6372.8; // In kilometers
-            var dLat = toRadians(lat2 - lat1);
-            var dLon = toRadians(lon2 - lon1);
-            lat1 = toRadians(lat1);
-            lat2 = toRadians(lat2);
-
-            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Sin(dLon / 2) * Math.Sin(dLon / 2) * Math.Cos(lat1) * Math.Cos(lat2);
-            var c = 2 * Math.Asin(Math.Sqrt(a));
-            return R * c;
-        }
-
-        public static double toRadians(double angle)
-        {
-            return Math.PI * angle / 180.0;
+            await Task.FromResult(0);
+            return map.Values.ToList();
         }
     }
 }

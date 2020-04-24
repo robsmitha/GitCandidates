@@ -7,8 +7,9 @@ namespace Domain.Entities
 {
     public class User : BaseEntity
     {
-        public string GitHubUsername { get; set; }
+        public string GitHubLogin { get; set; }
         public string GitHubToken { get; set; }
+        public string JWT { get; set; }
         public int UserStatusTypeID { get; set; }
         [ForeignKey("UserStatusTypeID")]
         public UserStatusType UserStatusType { get; set; }

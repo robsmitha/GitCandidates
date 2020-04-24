@@ -2,6 +2,7 @@
 import { Redirect, Link } from 'react-router-dom';
 import { jobService } from '../../services/job.service';
 import { AuthConsumer } from './../../context/AuthContext';
+import Octicon, { Briefcase } from '@primer/octicons-react';
 
 export class Job extends Component {
 
@@ -41,18 +42,24 @@ export class Job extends Component {
                     <div className="row">
                         <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                             <div className="text-center">
-                                <p className="lead">
+                                <Octicon icon={Briefcase} size="medium" />
+                                <h1 className="h3">
                                     {job.name}
-                                </p>
+                                </h1>
                                 <strong className="d-block">
-                                    {job.company}
+                                    {job.companyGitHubLogin}
                                 </strong>
                                 <small className="d-block text-muted">
-                                    {job.location}
+                                    {job.locations.map((l, index) =>
+                                        <span key={l.id}>
+                                            <span>{l.location}</span>
+                                            {index < job.locations.length - 1
+                                                ? <span>,</span>
+                                                : <span></span>}
+                                        </span>
+                                        )}
                                 </small>
                                 <hr className="w-25" />
-
-
                             </div>
                         </div>
                     </div>
@@ -61,7 +68,6 @@ export class Job extends Component {
                             <p>
                                 {job.description}
                             </p>
-
                         </div>
                     </div>
                     <div className="text-center mt-md-4 mt-3">

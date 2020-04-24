@@ -32,30 +32,30 @@ namespace GitCandidates.Services
             _identity = identity;
         }
 
-        public async Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IAccessToken accessToken, CancellationToken cancellationToken)
+        public async Task<User> FindOrCreateUser(IGitHubUser gitHubUser, CancellationToken cancellationToken)
         {
             var user = _context.Users
-                .FirstOrDefault(u => u.GitHubUsername.ToLower() == gitHubUser.login.ToLower());
+                .FirstOrDefault(u => u.GitHubLogin.ToLower() == gitHubUser.login.ToLower());
 
-            if (user != null)
-            {
-                user.GitHubToken = accessToken.access_token;    //update token
-                user.ModifiedTime = DateTime.Now;
-                _context.Users.Update(user);
-            }
-            else
+            if (user == null)
             {
                 var confirmed = _context.UserStatusTypes.FirstOrDefault(s => s.Name == "Submitted");
                 user = new User
                 {
-                    GitHubUsername = gitHubUser.login,
-                    UserStatusTypeID = confirmed.ID,
-                    GitHubToken = accessToken.access_token
+                    GitHubLogin = gitHubUser.login,
+                    UserStatusTypeID = confirmed.ID
                 };
                 _context.Users.Add(user);
+                await _context.SaveChangesAsync(cancellationToken);
             }
-            await _context.SaveChangesAsync(cancellationToken);
-            return new ApplicationUser(IssueJWTToken(user));
+
+            return user;
+        }
+
+        public async Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IAccessToken gitHubAccessToken, CancellationToken cancellationToken)
+        {
+            var user = await FindOrCreateUser(gitHubUser, cancellationToken);
+            return new ApplicationUser(IssueJWTToken(user, gitHubAccessToken.access_token));
         }
 
         public void ClearAuthentication()
@@ -73,8 +73,13 @@ namespace GitCandidates.Services
                 {
                     var user = await _context.Users.FindAsync(id);
 
-                    if (user?.ID > 0)
-                        return new ApplicationUser(IssueJWTToken(user));
+                    //ensure user is who they say they are
+                    if (user?.ID > 0 && user.JWT == accessToken.access_token 
+                        && !string.IsNullOrEmpty(user.GitHubToken))    //todo: check token w github.com
+                    {
+                        return new ApplicationUser(IssueJWTToken(user, user.GitHubToken));
+                    }
+                        
                 }
             }
             catch (Exception) { }
@@ -84,38 +89,46 @@ namespace GitCandidates.Services
             return new ApplicationUser();
         }
 
-        private bool IssueJWTToken(User user)
+        private bool IssueJWTToken(User user, string gitHubAccessToken)
         {
             try
             {
                 var expires = DateTime.UtcNow.AddDays(7);
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JwtSecret));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-                var claims = new[] {
+                var _claims = new[] {
                     new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
-                    new Claim(ClaimTypes.Email, user.GitHubUsername),
+                    new Claim(ClaimTypes.Email, user.GitHubLogin),
                 };
 
                 var token = new JwtSecurityToken(_appSettings.JwtIssuer,
                   _appSettings.JwtIssuer,
-                  claims: claims,
+                  claims: _claims,
                   expires: expires,
                   signingCredentials: credentials);
 
-                var jwtToken = new JwtSecurityTokenHandler()
-                    .WriteToken(token);
 
-                var accessToken = new JWTAccessToken
+                var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+                var _accessToken = new JWTAccessToken
                 {
-                    access_token = jwtToken,
+                    access_token = jwt,
                     token_type = "",
-                    expires_in = expires.ToString()
+                    expires_at = expires
                 };
-                var gitHubAccessToken = new AccessToken
+
+                var _gitHubAccessToken = new AccessToken
                 {
-                    access_token = user.GitHubToken
+                    access_token = gitHubAccessToken
                 };
-                _identity.SetIdentity(accessToken, claims, gitHubAccessToken);
+
+                user.JWT = _accessToken.access_token;
+                user.GitHubToken = _gitHubAccessToken.access_token;
+                user.ModifiedTime = DateTime.Now;
+                _context.Users.Update(user);
+                _context.SaveChanges();
+
+                _identity.SetIdentity(_accessToken, _claims, _gitHubAccessToken);
 
                 return true;
             }
