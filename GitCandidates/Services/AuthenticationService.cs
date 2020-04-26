@@ -39,11 +39,11 @@ namespace GitCandidates.Services
 
             if (user == null)
             {
-                var confirmed = _context.UserStatusTypes.FirstOrDefault(s => s.Name == "Submitted");
+                var submitted = _context.UserStatusTypes.FirstOrDefault(s => s.Name == "Submitted");
                 user = new User
                 {
                     GitHubLogin = gitHubUser.login,
-                    UserStatusTypeID = confirmed.ID
+                    UserStatusTypeID = submitted.ID
                 };
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync(cancellationToken);

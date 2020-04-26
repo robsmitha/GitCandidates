@@ -1,42 +1,61 @@
 ﻿const RULES = {
     MIN_LENGTH: 'minLength',
     IS_REQUIRED: 'isRequired',
-    IS_EMAIL: 'isEmail'
+    IS_EMAIL: 'isEmail',
+    MAX_LENGTH: 'maxLength',
+    IS_PHONE: 'isPhone',
 }
 
 const validate = (value, rules, label) => {
+    if (rules === undefined || rules === null) return []
     let errorMessages = []
-    for (let rule in rules) {
-
+    rules.forEach(data => {
+        let ruleValue = data.validationRuleValue
+        let message = data.validationMessage
+        let rule = data.validationRuleKey
+        console.log(rule)
         switch (rule) {
             case RULES.IS_REQUIRED:
-                if (!requiredValidator(value)) {
-                    errorMessages.push(`${label} is required.`);
+                if (ruleValue && !requiredValidator(value)) {
+                    let err = message
+                        ? message
+                        : `${label} is required.`
+                    errorMessages.push(err);
                 }
                 break;
-
             case RULES.MIN_LENGTH:
-                if (!minLengthValidator(value, rules[rule])) {
+                if (!minLengthValidator(value, ruleValue)) {
                     if (value.length > 0) {
-                        errorMessages.push(`The minimum length for ${label} is ${rules[rule]} characters.`);
+                        let err = message
+                            ? message
+                            : `The minimum length for ${label} is ${ruleValue} characters.`
+                        errorMessages.push(err);
                     }
                 }
                 break;
-
-            case RULES.IS_EMAIL:
-                if (!emailValidator(value)) {
-                    if (value.length > 0) {
-                        errorMessages.push(`"${value}" is not a valid email address.`);
-                    }
+            case RULES.MAX_LENGTH:
+                if (!maxLengthValidator(value, ruleValue)) {
+                    let err = message
+                        ? message
+                        : `The maximum length for ${label} is ${ruleValue} characters.`
+                    errorMessages.push(err);
                 }
                 break;
         }
-
-    }
-
+    })
     return errorMessages;
 }
 
+
+/**
+ * maxLength Val
+ * @param  value 
+ * @param  maxLength
+ * @return          
+ */
+const maxLengthValidator = (value, maxLength) => {
+    return value.length <= maxLength;
+}
 
 /**
  * minLength Val

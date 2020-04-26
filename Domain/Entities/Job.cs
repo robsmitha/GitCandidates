@@ -40,7 +40,7 @@ namespace Domain.Entities
         /// </summary>
         /// <param name="this"></param>
         /// <returns></returns>
-        public static bool IsAvailable(this Job @this)
+        public static bool IsAcceptingApplications(this Job @this)
         {
             return @this.Active && 
                 (@this.PostAt ?? DateTime.MaxValue) <= DateTime.Now 
@@ -58,6 +58,23 @@ namespace Domain.Entities
             if (string.IsNullOrWhiteSpace(keyword)) return true;
             return @this.Name.ToLower().Contains(keyword.ToLower()) 
                 || @this.Description.ToLower().Contains(keyword.ToLower());
+        }
+
+        /// <summary>
+        /// Gets elapsed time string in english
+        /// </summary>
+        /// <param name="this"></param>
+        /// <returns></returns>
+        public static string ToElapsedTime(this DateTime @this)
+        {
+            var elapsedTime = DateTime.Now.Subtract(@this);
+            if ((int)elapsedTime.TotalDays > 13) return $"{(int)elapsedTime.TotalDays / 7} weeks ago";
+            if ((int)elapsedTime.TotalDays == 7) return $"a week ago";
+            if ((int)elapsedTime.TotalDays > 1) return $"{(int)elapsedTime.TotalDays} days ago";
+            if ((int)elapsedTime.TotalDays == 1) return $"a day ago";
+            if ((int)elapsedTime.TotalHours > 1) return $"{(int)elapsedTime.TotalHours} hours ago";
+            if ((int)elapsedTime.TotalHours == 1) return $"one hour ago";
+            return "New";
         }
     }
 }

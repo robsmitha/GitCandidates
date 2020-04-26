@@ -23,5 +23,8 @@ async function handleResponse(response) {
         for (let d in data) errors += data[d] + '\n'
         return errors;
     }
+    else {
+        console.log('an unknow error occurred')
+    }
     return data;
 }

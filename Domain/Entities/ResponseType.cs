@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class QuestionType : BaseType
+    public class ResponseType : BaseType
     {
+        public string Input { get; set; }
     }
 }

@@ -15,10 +15,14 @@ namespace Domain.Entities
         public Company Company { get; set; }
 
         /// <summary>
-        /// Question type for question
+        /// response type for question (i.e. text, radio, etc.)
         /// </summary>
-        public int QuestionTypeID { get; set; }
-        [ForeignKey("QuestionTypeID")]
-        public QuestionType QuestionType { get; set; }
+        public int ResponseTypeID { get; set; }
+        [ForeignKey("ResponseTypeID")]
+        public ResponseType ResponseType { get; set; }
+
+        public string Label { get; set; }
+        public string Placeholder { get; set; }
+        public string DefaultValue { get; set; }
     }
 }

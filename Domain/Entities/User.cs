@@ -14,4 +14,9 @@ namespace Domain.Entities
         [ForeignKey("UserStatusTypeID")]
         public UserStatusType UserStatusType { get; set; }
     }
+    public static class UserExtensions
+    {
+        public static bool CanApply(this User @this) => 
+            @this.Active && @this.UserStatusType != null && @this.UserStatusType.CanApply;
+    }
 }

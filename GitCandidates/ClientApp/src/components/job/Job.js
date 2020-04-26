@@ -71,23 +71,52 @@ export class Job extends Component {
                         </div>
                     </div>
                     <div className="text-center mt-md-4 mt-3">
-                        <h5>
-                            Is this a good fit?
-                        </h5>
-
-                        <AuthConsumer>
-                            {({ auth }) => (
-                                <div>
-                                    {!auth
-                                        ? <Link to="/oauth">Sign in to apply.</Link>
-                                        : <Link to={'/apply/:id'.replace(':id', job.id)}>Yes, apply now!</Link>}
-                                </div>
-                            )}
-                        </AuthConsumer>
+                        {job.isAcceptingApplications
+                            ? Job.renderApplyMessage(job)
+                            : <h5 className="text-muted">This job is no longer accepting applications.</h5>}
                     </div>
                 </div>
             </div>
             )
+    }
+
+    static renderApplyMessage(job) {
+        let contents = job.userCanApply
+            ? Job.renderSignInMessage(job)
+            : Job.renderActiveApplication()
+        return (
+            <div>
+                {contents}
+            </div>
+            )
+    }
+
+    static renderActiveApplication() {
+        return (
+            <div>
+                <h5 className="text-muted">You already have an active application.</h5>
+                <small className="text-muted">
+                    Applications are displayed on your&nbsp;<Link to={'/account'}>account.</Link>
+                </small>
+            </div>
+            )
+    }
+
+    static renderSignInMessage(job) {
+        return (
+            <div>
+                <h5>Is this a good fit? </h5>
+                <AuthConsumer>
+                    {({ auth }) => (
+                        <div>
+                            {!auth
+                                ? <Link to="/oauth">Sign in to apply.</Link>
+                                : <Link to={'/apply/:id'.replace(':id', job.id)}>Yes, apply now!</Link>}
+                        </div>
+                    )}
+                </AuthConsumer>
+            </div>
+        )
     }
 
     static renderLoading() {

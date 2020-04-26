@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { authService } from './../services/auth.service'
 import TextInput from './../helpers/TextInput';
-import handleChange from './../helpers/HandleChange';
+import validate from './../helpers/Validate';
 import { Redirect, Link } from 'react-router-dom';
 import { AuthConsumer } from './../context/AuthContext';
 import Octicon, { Code, Search, Lock, Telescope } from '@primer/octicons-react'
@@ -20,10 +20,16 @@ export class OAuth extends Component {
                     label: 'GitHub login',
                     valid: false,
                     touched: false,
-                    validationRules: {
-                        isRequired: true,
-                        minLength: 1
-                    },
+                    validationRules: [
+                        {
+                            validationRuleKey: "isRequired",
+                            validationRuleValue: "true"
+                        },
+                        {
+                            validationRuleKey: "minLength",
+                            validationRuleValue: "1"
+                        }
+                    ],
                     errors: []
                 },
                 staySignedIn: {
@@ -41,7 +47,31 @@ export class OAuth extends Component {
         const value = event.target instanceof HTMLInputElement && event.target.getAttribute('type') == 'checkbox'
             ? event.target.checked
             : event.target.value;
-        this.setState(handleChange(name, value, this.state.formControls));
+        this.handleChange(name, value)
+    }
+
+    handleChange = (name, value) => {
+        const updatedControls = {
+            ...this.state.formControls
+        };
+
+        const updatedFormElement = {
+            ...updatedControls[name]
+        };
+
+        updatedFormElement.value = value;
+        updatedFormElement.touched = true;
+        updatedFormElement.errors = validate(value, updatedFormElement.validationRules, updatedFormElement.placeholder);
+        updatedFormElement.valid = updatedFormElement.errors === undefined || updatedFormElement.errors === null || updatedFormElement.errors.length === 0;
+        updatedControls[name] = updatedFormElement;
+        let formIsValid = true;
+        for (let inputIdentifier in updatedControls) {
+            formIsValid = updatedControls[inputIdentifier].valid && formIsValid;
+        }
+        this.setState({
+            formControls: updatedControls,
+            formIsValid: formIsValid
+        })
     }
 
     submitHandler = event => {

@@ -14,7 +14,7 @@ namespace CleanersNextDoor.Services.GitHub
     {
         public const string ApiBaseUrl = "https://api.github.com";
 
-        public async Task<T> GetAsync<T>(IAccessToken accessToken, string requestUri, string expansionKeys = null)
+        public async Task<T> GetAsync<T>(string accessToken, string requestUri, string expansionKeys = null)
         {
             var result = await SendAsync<T>(accessToken, requestUri);
 
@@ -57,7 +57,7 @@ namespace CleanersNextDoor.Services.GitHub
 
             return result;
         }
-        public T Get<T>(IAccessToken accessToken, string requestUri, string expansionKeys = null)
+        public T Get<T>(string accessToken, string requestUri, string expansionKeys = null)
         {
             //Generic result
             var result = Send<T>(accessToken, requestUri);
@@ -100,24 +100,24 @@ namespace CleanersNextDoor.Services.GitHub
 
             return result;
         }
-        public T Send<T>(IAccessToken accessToken, string requestUri)
+        public T Send<T>(string accessToken, string requestUri)
         {
             using HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
-            client.DefaultRequestHeaders.Add("Authorization", $"token {accessToken.access_token}");
+            client.DefaultRequestHeaders.Add("Authorization", $"token {accessToken}");
             client.DefaultRequestHeaders.Add("User-Agent", "GitCandidates");
             var response = client.GetAsync(FormatRequestUri(requestUri)).Result;
             var result = response.Content.ReadAsStringAsync().Result;
             return JsonSerializer.Deserialize<T>(result);
         }
 
-        public async Task<T> SendAsync<T>(IAccessToken accessToken, string requestUri)
+        public async Task<T> SendAsync<T>(string accessToken, string requestUri)
         {
             using HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
-            client.DefaultRequestHeaders.Add("Authorization", $"token {accessToken.access_token}");
+            client.DefaultRequestHeaders.Add("Authorization", $"token {accessToken}");
             client.DefaultRequestHeaders.Add("User-Agent", "GitCandidates");
             var response = await client.GetAsync(FormatRequestUri(requestUri));
             var result = response.Content.ReadAsStringAsync().Result;

@@ -57,7 +57,7 @@ namespace GitCandidates.Controllers
             var cancellationToken = new CancellationToken();
             var accessToken = await _github.GenerateOAuthAccessToken(authParams);
             HttpContext.Session.Remove(IdentityConstants.OAUTH_STATE_SESSION_KEY);
-            var gitHubUser = await _github.GetAuthenticatedUser(accessToken);
+            var gitHubUser = await _github.GetAuthenticatedUser(accessToken.access_token);
             return Ok(await _auth.AuthorizeUser(gitHubUser, accessToken, cancellationToken));
         }
 

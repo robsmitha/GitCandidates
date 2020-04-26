@@ -18,10 +18,10 @@ namespace Application.Jobs.Queries.GetJob
         public string Description { get; set; }
         public int CompanyID { get; set; }
         public string CompanyGitHubLogin { get; set; }
-
-        /// <summary>
-        /// Job has multiple locations. If null, company address displays
-        /// </summary>
+        public DateTime PostAt { get; set; }
+        public string Posted => PostAt.ToElapsedTime();
+        public bool UserCanApply { get; set; }
+        public bool IsAcceptingApplications { get; set; }
         public List<JobLocationModel> Locations { get;set; }
 
     }

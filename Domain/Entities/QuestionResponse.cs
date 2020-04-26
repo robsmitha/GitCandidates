@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public class QuestionAnswer : BaseEntity
+    public class QuestionResponse : BaseEntity
     {
         /// <summary>
         /// QuestionID for question
@@ -13,5 +13,9 @@ namespace Domain.Entities
         public int QuestionID { get; set; }
         [ForeignKey("QuestionID")]
         public Question Question { get; set; }
+
+        public string Answer { get; set; }
+        public int DisplayOrder { get; set; }
+        public bool DefaultValue { get; set; }
     }
 }

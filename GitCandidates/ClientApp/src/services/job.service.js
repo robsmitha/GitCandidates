@@ -2,7 +2,9 @@
 
 export const jobService = {
     getJobs,
-    getJob
+    getJob,
+    getJobApplication,
+    createJobApplication
 };
 
 function getJobs(data) {
@@ -11,4 +13,12 @@ function getJobs(data) {
 
 function getJob(id) {
     return get(`jobs/getjob/${id}`)
+}
+
+function getJobApplication(id) {
+    return get(`jobs/getJobApplication/${id}`)
+}
+
+function createJobApplication(data) {
+    return post(`jobs/createJobApplication`, data)
 }

@@ -1,18 +1,11 @@
-﻿using CleanersNextDoor.Services.GitHub.Models;
-using Domain.Services.GitHub.Attributes;
+﻿using Application.Common.Mappings;
 using Domain.Services.GitHub.Interfaces;
 using System;
-using System.Collections.Generic;
 
-namespace GitCandidates.Services.GitHub.Models
+namespace Application.Users.GetUser
 {
-    public class GitHubUser : IGitHubUser
+    public class GitHubUserModel : IMapFrom<IGitHubUser>
     {
-        public GitHubUser()
-        {
-            organizations = new List<Organization>();
-            repos = new List<Repo>();
-        }
         public string login { get; set; }
         public int id { get; set; }
         public string node_id { get; set; }
@@ -25,9 +18,7 @@ namespace GitCandidates.Services.GitHub.Models
         public string gists_url { get; set; }
         public string starred_url { get; set; }
         public string subscriptions_url { get; set; }
-        [Expandable(Expand = "organizations", Result = typeof(List<Organization>), MapTo = "organizations")]
         public string organizations_url { get; set; }
-        [Expandable(Expand = "repos", Result = typeof(List<Repo>), MapTo = "repos")]
         public string repos_url { get; set; }
         public string events_url { get; set; }
         public string received_events_url { get; set; }
@@ -46,9 +37,5 @@ namespace GitCandidates.Services.GitHub.Models
         public int following { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
-
-        //expansions
-        public List<Organization> organizations { get; set; }
-        public List<Repo> repos { get; set; }
     }
 }

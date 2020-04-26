@@ -21,5 +21,7 @@ namespace Domain.Entities
         [ForeignKey("QuestionID")]
         public Question Question { get; set; }
 
+        public int DisplayOrder { get; set; }
+
     }
 }

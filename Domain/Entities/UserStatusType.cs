@@ -6,5 +6,6 @@ namespace Domain.Entities
 {
     public class UserStatusType : BaseType
     {
+        public bool CanApply { get; set; }
     }
 }

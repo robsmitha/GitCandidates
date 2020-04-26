@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Jobs.Commands.CreateJobApplication;
 using Application.Jobs.Queries.GetJob;
+using Application.Jobs.Queries.GetJobApplication;
 using Application.Jobs.Queries.GetJobs;
 using Domain.Services.GitHub.Interfaces;
 using Infrastructure.Identity;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GitCandidates.Controllers
@@ -32,7 +35,20 @@ namespace GitCandidates.Controllers
         [HttpGet("GetJob/{id}")]
         public async Task<ActionResult<List<GetJobModel>>> GetJob(int id)
         {
-            return Ok(await _mediator.Send(new GetJobQuery(id)));
+            return Ok(await _mediator.Send(new GetJobQuery(id, _identity.ClaimID)));
         }
+        [HttpGet("GetJobApplication/{id}")]
+        public async Task<ActionResult<GetJobApplicationModel>> GetJobApplication(int id)
+        {
+            return Ok(await _mediator.Send(new GetJobApplicationQuery(id)));
+        }
+
+        [HttpPost("CreateJobApplication")]
+        [Authorize]
+        public async Task<ActionResult<bool>> CreateJobApplication(CreateJobApplicationModel request)
+        {
+            return Ok(await _mediator.Send(new CreateJobApplicationCommand(request, _identity.ClaimID)));
+        }
+
     }
 }

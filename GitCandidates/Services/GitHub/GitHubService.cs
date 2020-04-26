@@ -21,14 +21,14 @@ namespace GitCandidates.Services.GitHub
             _appSettings = appSettings.Value;
             _client = client;
         }
-        public async Task<IGitHubUser> GetAuthenticatedUser(IAccessToken accessToken)
+        public async Task<IGitHubUser> GetAuthenticatedUser(string accessToken)
         {
             return await _client.GetAsync<GitHubUser>(accessToken, "/user");
         }
 
-        public async Task<IGitHubUser> GetUser(string username, IAccessToken accessToken, string expansions = null)
+        public async Task<IGitHubUser> GetUser(string username, string accessToken)
         {
-            return _client.Get<GitHubUser>(accessToken, $"/users/{username}", expansions);
+            return _client.Get<GitHubUser>(accessToken, $"/users/{username}");
         }
 
         public async Task<IAccessToken> GenerateOAuthAccessToken(IGenerateOAuthAccessToken generateOAuthAccessToken)

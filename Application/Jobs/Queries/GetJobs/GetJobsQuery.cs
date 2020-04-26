@@ -44,7 +44,7 @@ namespace Application.Jobs.Queries.GetJobs
             var data = from j in _context.Jobs.AsEnumerable()
                        join c in _context.Companies.AsEnumerable() on j.CompanyID equals c.ID
                        join l in _context.JobLocations.AsEnumerable() on j.ID equals l.JobID
-                       where j.IsAvailable() && j.HasKeyword(request.Keyword) && l.WithinMiles(request.Latitude, request.Longitude, request.Miles)
+                       where j.IsAcceptingApplications() && j.HasKeyword(request.Keyword) && l.WithinMiles(request.Latitude, request.Longitude, request.Miles)
                        select new { j, l };
 
             var map = new Dictionary<int, GetJobsModel>();

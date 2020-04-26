@@ -9,7 +9,7 @@ namespace Domain.Services.GitHub.Interfaces
     public interface IGitHubService
     {
         Task<IAccessToken> GenerateOAuthAccessToken(IGenerateOAuthAccessToken generateOAuthAccessToken);
-        Task<IGitHubUser> GetAuthenticatedUser(IAccessToken accessToken);
-        Task<IGitHubUser> GetUser(string username, IAccessToken accessToken, string expansions = null);
+        Task<IGitHubUser> GetAuthenticatedUser(string accessToken);
+        Task<IGitHubUser> GetUser(string username, string accessToken);
     }
 }

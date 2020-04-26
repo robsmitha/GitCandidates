@@ -10,6 +10,7 @@ import { Job } from './components/job/Job';
 import { AuthProvider } from './context/AuthContext'
 
 import './custom.css'
+import { Apply } from './components/job/Apply';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -20,6 +21,7 @@ export default class App extends Component {
               <LayoutRoute exact path='/' component={Home} />
               <LayoutRoute exact path='/account' component={Account} />
               <LayoutRoute exact path='/job/:id' component={Job} />
+              <LayoutRoute exact path='/apply/:id' component={Apply} />
 
               <NoNavLayoutRoute exact path='/oauth' component={OAuth} />
               <NoNavLayoutRoute exact path='/oauth-callback' component={OAuthCallback} />

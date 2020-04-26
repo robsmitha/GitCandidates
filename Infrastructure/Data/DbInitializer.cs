@@ -17,7 +17,8 @@ namespace Infrastructure.Data
             var confirmed = new UserStatusType
             {
                 Name = "Confirmed",
-                Description = "The user has confirmed their email is active and is ready for opportunities."
+                Description = "The user has confirmed their email is active and is ready for opportunities.",
+                CanApply = true
             };
             var userStatusTypes = new List<UserStatusType>
             {
@@ -36,6 +37,7 @@ namespace Infrastructure.Data
             context.UserStatusTypes.AddRange(userStatusTypes);
             context.SaveChanges();
 
+            //add user
             var robsmitha = new User
             {
                 GitHubLogin = "robsmitha",
@@ -44,12 +46,168 @@ namespace Infrastructure.Data
             context.Users.Add(robsmitha);
             context.SaveChanges();
 
+            //add company
             var gitCandidates = new Company
             {
                 GitHubLogin = "GitCandidates"
             };
             context.Companies.Add(gitCandidates);
             context.SaveChanges();
+
+            #region Response types
+            var textResponse = new ResponseType
+            {
+                Name = "TextResponse",
+                Description = "A write in response question that renders a text input field.",
+                Input = "text"
+            };
+            var numberResponse = new ResponseType
+            {
+                Name = "NumberResponse",
+                Description = "A write in response question that renders a number input field.",
+                Input = "number"
+            };
+            var yesNo = new ResponseType
+            {
+                Name = "YesNo",
+                Description = "A yes/no question that renders two yes/mp radio buttons.",
+                Input = "radio"
+            };
+            context.ResponseTypes.Add(yesNo);
+            context.ResponseTypes.Add(numberResponse);
+            context.ResponseTypes.Add(textResponse);
+            context.SaveChanges();
+            #endregion
+
+            #region Validation rules
+            var isRequired = new ValidationRule
+            {
+                Name = "Is Required",
+                Description = "The field in requierd",
+                Key = "isRequired"
+            };
+            var minLength = new ValidationRule
+            {
+                Name = "Minimum Length",
+                Description = "The field has a minimum length",
+                Key = "minLength"
+            };
+            var maxLength = new ValidationRule
+            {
+                Name = "Maximum Length",
+                Description = "The field has a maximum length",
+                Key = "maxLength"
+            };
+            context.ValidationRules.Add(isRequired);
+            context.ValidationRules.Add(minLength);
+            context.ValidationRules.Add(maxLength);
+            context.SaveChanges();
+            #endregion
+
+            #region Yes/No test question
+            var yesNoQ = new Question
+            {
+                Label = "Are you authorized to work in the U.S.?",
+                CompanyID = gitCandidates.ID,
+                ResponseTypeID = yesNo.ID
+            };
+            context.Questions.Add(yesNoQ);
+            context.SaveChanges();
+            var yesNoQYes = new QuestionResponse
+            {
+                Answer = "Yes",
+                QuestionID = yesNoQ.ID,
+                DisplayOrder = 1
+            };
+            var yesNoQNo = new QuestionResponse
+            {
+                Answer = "No",
+                QuestionID = yesNoQ.ID,
+                DisplayOrder = 2
+            };
+            context.QuestionResponses.Add(yesNoQYes);
+            context.QuestionResponses.Add(yesNoQNo);
+            context.SaveChanges();
+
+            var yesNoQValidationIsRequired = new QuestionValidation
+            {
+                QuestionID = yesNoQ.ID,
+                ValidationRuleID = isRequired.ID,
+            };
+            context.QuestionValidations.Add(yesNoQValidationIsRequired);
+            context.SaveChanges();
+            #endregion
+
+            #region Write in test question
+            var numberResponseQ = new Question
+            {
+                Label = "How many years have you professionaly developed software?",
+                CompanyID = gitCandidates.ID,
+                ResponseTypeID = numberResponse.ID,
+                Placeholder = "Years of experience"
+            };
+            context.Questions.Add(numberResponseQ);
+            context.SaveChanges();
+
+            var numberResponseQValidationIsRequired = new QuestionValidation
+            {
+                QuestionID = numberResponseQ.ID,
+                ValidationRuleID = isRequired.ID,
+                ValidationRuleValue = "true"
+            };
+            var numberResponseQValidationMaxLength = new QuestionValidation
+            {
+                QuestionID = numberResponseQ.ID,
+                ValidationRuleID = maxLength.ID,
+                ValidationRuleValue = "2"
+            };
+            context.QuestionValidations.Add(numberResponseQValidationIsRequired);
+            context.QuestionValidations.Add(numberResponseQValidationMaxLength);
+            context.SaveChanges();
+
+            #endregion
+
+            #region Add jobs
+            var jobApplicationStatusTypes = new List<JobApplicationStatusType>
+            {
+                new JobApplicationStatusType
+                {
+                    Name = "Submitted",
+                    Description = "The application has been submitted.",
+                    IsActiveApplication = true
+                },
+                new JobApplicationStatusType
+                {
+                    Name = "Under Review",
+                    Description = "The application is under review.",
+                    IsActiveApplication = true
+                },
+                new JobApplicationStatusType
+                {
+                    Name = "Under Consideration",
+                    Description = "The application is under review by the company.",
+                    IsActiveApplication = true
+                },
+                new JobApplicationStatusType
+                {
+                    Name = "Scheduling Interview",
+                    Description = "The an interview is being schedules.",
+                    IsActiveApplication = true
+                },
+                new JobApplicationStatusType
+                {
+                    Name = "No Longer Under Consideration",
+                    Description = "The application is no longer being reviewed."
+                },
+                new JobApplicationStatusType
+                {
+                    Name = "Withdrawn",
+                    Description = "The application has been withdrawn by the user."
+                }
+            };
+            context.JobApplicationStatusTypes.AddRange(jobApplicationStatusTypes);
+            context.SaveChanges();
+
 
             var fullstack = new Job
             {
@@ -83,7 +241,6 @@ namespace Infrastructure.Data
                 PostAt = DateTime.Now.AddDays(-8),
                 UserID = robsmitha.ID
             };
-
             var jobs = new List<Job>
             {
                 fullstack, frontend, senior, cloud
@@ -127,9 +284,25 @@ namespace Infrastructure.Data
                 },
             };
             context.JobLocations.AddRange(jobLocations);
-
+            foreach (var job in jobs)
+            {
+                context.JobApplicationQuestions.AddRange(new[] {
+                    new JobApplicationQuestion
+                    {
+                        JobID = job.ID,
+                        QuestionID = yesNoQ.ID,
+                        DisplayOrder = 1,
+                    },
+                    new JobApplicationQuestion
+                    {
+                        JobID = job.ID,
+                        QuestionID = numberResponseQ.ID,
+                        DisplayOrder = 2
+                    }
+                });
+            }
             context.SaveChanges();
-
+            #endregion
 
         }
     }
