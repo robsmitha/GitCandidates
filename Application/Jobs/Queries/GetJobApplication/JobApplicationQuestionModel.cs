@@ -20,6 +20,8 @@ namespace Application.Jobs.Queries.GetJobApplication
         public string QuestionPlaceholder { get; set; }
         public string QuestionDefaultValue { get; set; }
         public string QuestionResponseTypeInput { get; set; }
+        public int QuestionMinimum { get; set; }
+        public int QuestionMaximum { get; set; }
         public List<QuestionResponseModel> Responses { get; set; }
         public List<QuestionValidationModel> ValidationRules { get; set; }
     }

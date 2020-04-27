@@ -2,7 +2,7 @@
 using Domain.Services.GitHub.Interfaces;
 using System;
 
-namespace Application.Users.GetUser
+namespace Application.Users.Queries.GetUser
 {
     public class GitHubUserModel : IMapFrom<IGitHubUser>
     {

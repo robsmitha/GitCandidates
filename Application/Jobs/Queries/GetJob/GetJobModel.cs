@@ -21,6 +21,7 @@ namespace Application.Jobs.Queries.GetJob
         public DateTime PostAt { get; set; }
         public string Posted => PostAt.ToElapsedTime();
         public bool UserCanApply { get; set; }
+        public int SavedJobID { get; set; }
         public bool IsAcceptingApplications { get; set; }
         public List<JobLocationModel> Locations { get;set; }
 

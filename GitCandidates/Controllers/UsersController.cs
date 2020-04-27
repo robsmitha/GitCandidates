@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Application.Users.Commands.SetSavedJob;
 using Application.Users.Commands.WithdrawApplication;
-using Application.Users.GetUser;
-using Domain.Services.GitHub.Interfaces;
-using GitCandidates.Services.GitHub.Models;
+using Application.Users.Queries.GetJobApplications;
+using Application.Users.Queries.GetSavedJobs;
+using Application.Users.Queries.GetUser;
 using Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -29,10 +30,28 @@ namespace GitCandidates.Controllers
             return Ok(await _mediator.Send(new GetUserQuery(_identity.ClaimID)));
         }
 
+        [HttpGet("GetJobApplications")]
+        public async Task<ActionResult<GetJobApplicationsModel>> GetJobApplications()
+        {
+            return Ok(await _mediator.Send(new GetJobApplicationsQuery(_identity.ClaimID)));
+        }
+
+        [HttpGet("GetSavedJobs")]
+        public async Task<ActionResult<GetUserModel>> GetSavedJobs()
+        {
+            return Ok(await _mediator.Send(new GetSavedJobsQuery(_identity.ClaimID)));
+        }
+
         [HttpPost("WithdrawApplication")]
         public async Task<ActionResult<bool>> WithdrawApplication(WithdrawApplicationModel model)
         {
             return Ok(await _mediator.Send(new WithdrawApplicationCommand(model.ID, _identity.ClaimID)));
+        }
+
+        [HttpPost("SetSavedJob")]
+        public async Task<ActionResult<bool>> SetSavedJob(SetSavedJobModel model)
+        {
+            return Ok(await _mediator.Send(new SetSavedJobCommand(model.JobID, _identity.ClaimID, model.SavedJobID)));
         }
     }
 }

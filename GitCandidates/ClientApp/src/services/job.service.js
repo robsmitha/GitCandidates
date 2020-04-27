@@ -4,7 +4,8 @@ export const jobService = {
     getJobs,
     getJob,
     getJobApplication,
-    createJobApplication
+    createJobApplication,
+    getJobSkills
 };
 
 function getJobs(data) {
@@ -13,6 +14,10 @@ function getJobs(data) {
 
 function getJob(id) {
     return get(`jobs/getjob/${id}`)
+}
+
+function getJobSkills(id) {
+    return get(`jobs/getJobSkills/${id}`)
 }
 
 function getJobApplication(id) {

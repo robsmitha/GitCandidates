@@ -34,7 +34,9 @@ export class Apply extends Component {
                         type: q.questionResponseTypeInput,
                         responses: q.responses,
                         errors: [],
-                        jacId: q.id
+                        jacId: q.id,
+                        min: q.questionMinimum,
+                        max: q.questionMaximum
                     }
                 })
 
@@ -165,6 +167,8 @@ export class Apply extends Component {
                                                         onChange={this.changeHandler}
                                                         touched={this.state.formControls[name].touched ? 1 : 0}
                                                         valid={this.state.formControls[name].valid ? 1 : 0}
+                                                        min={this.state.formControls[name].min}
+                                                        max={this.state.formControls[name].max}
                                                     />
                                                 </div>
                                             )}

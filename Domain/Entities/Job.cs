@@ -28,6 +28,11 @@ namespace Domain.Entities
         public DateTime? PostAt { get; set; }
 
         /// <summary>
+        /// Job post full content
+        /// </summary>
+        public string Post { get; set; }
+
+        /// <summary>
         /// Indicates datetime the job should be or was removed
         /// if null, nothing happens
         /// </summary>

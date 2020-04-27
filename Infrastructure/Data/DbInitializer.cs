@@ -144,7 +144,9 @@ namespace Infrastructure.Data
                 Label = "How many years have you professionaly developed software?",
                 CompanyID = gitCandidates.ID,
                 ResponseTypeID = numberResponse.ID,
-                Placeholder = "Years of experience"
+                Placeholder = "Years of experience",
+                Minimum = 0,
+                Maximum = 99
             };
             context.Questions.Add(numberResponseQ);
             context.SaveChanges();
@@ -301,6 +303,147 @@ namespace Infrastructure.Data
                     }
                 });
             }
+
+            var cSharp = new Skill
+            {
+                Name = "C#",
+                Description = "C# progamming language"
+            };
+            var javaScript = new Skill
+            {
+                Name = "JavaScript",
+                Description = "JavaScript progamming language"
+            };
+            var sfrontend = new Skill
+            {
+                Name = "Frontend",
+                Description = "Frontend development"
+            };
+            var sbackend = new Skill
+            {
+                Name = "Backend",
+                Description = "Backend development"
+            };
+            var html = new Skill
+            {
+                Name = "HTML",
+                Description = "HTML"
+            };
+            var css = new Skill
+            {
+                Name = "CSS",
+                Description = "CSS"
+            };
+            context.Skills.AddRange(new List<Skill>
+            {
+                cSharp,
+                javaScript,
+                sfrontend,
+                sbackend,
+                html,
+                css,
+            });
+            context.SaveChanges();
+
+            context.JobSkills.AddRange(new []
+            {
+                //frontend
+                new JobSkill
+                {
+                    JobID = frontend.ID,
+                    SkillID = html.ID
+                },
+                new JobSkill
+                {
+                    JobID = frontend.ID,
+                    SkillID = css.ID
+                },
+                new JobSkill
+                {
+                    JobID = frontend.ID,
+                    SkillID = sfrontend.ID
+                },
+                //sr developer
+                new JobSkill
+                {
+                    JobID = senior.ID,
+                    SkillID = sbackend.ID
+                },
+                new JobSkill
+                {
+                    JobID = senior.ID,
+                    SkillID = cSharp.ID
+                },
+                new JobSkill
+                {
+                    JobID = senior.ID,
+                    SkillID = javaScript.ID
+                },
+                //cloud
+                new JobSkill
+                {
+                    JobID = cloud.ID,
+                    SkillID = sbackend.ID
+                },
+                new JobSkill
+                {
+                    JobID = cloud.ID,
+                    SkillID = cSharp.ID
+                },
+                //full stack
+                new JobSkill
+                {
+                    JobID = fullstack.ID,
+                    SkillID = html.ID
+                },
+                new JobSkill
+                {
+                    JobID = fullstack.ID,
+                    SkillID = css.ID
+                },
+                new JobSkill
+                {
+                    JobID = fullstack.ID,
+                    SkillID = sfrontend.ID
+                },
+                new JobSkill
+                {
+                    JobID = fullstack.ID,
+                    SkillID = sbackend.ID
+                },
+                new JobSkill
+                {
+                    JobID = fullstack.ID,
+                    SkillID = cSharp.ID
+                },
+                new JobSkill
+                {
+                    JobID = fullstack.ID,
+                    SkillID = javaScript.ID
+                },
+            });
+            context.UserSkills.AddRange(new[] {
+                new UserSkill
+                {
+                    UserID = robsmitha.ID,
+                    SkillID = cSharp.ID,
+                },
+                new UserSkill
+                {
+                    UserID = robsmitha.ID,
+                    SkillID = javaScript.ID,
+                },
+                new UserSkill
+                {
+                    UserID = robsmitha.ID,
+                    SkillID = sfrontend.ID,
+                },
+                new UserSkill
+                {
+                    UserID = robsmitha.ID,
+                    SkillID = sbackend.ID,
+                },
+            });
             context.SaveChanges();
             #endregion
 

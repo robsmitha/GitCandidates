@@ -24,5 +24,8 @@ namespace Domain.Entities
         public string Label { get; set; }
         public string Placeholder { get; set; }
         public string DefaultValue { get; set; }
+
+        public int? Minimum { get; set; }
+        public int? Maximum { get; set; }
     }
 }

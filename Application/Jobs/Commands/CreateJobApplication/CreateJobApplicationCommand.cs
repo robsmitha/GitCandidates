@@ -44,14 +44,13 @@ namespace Application.Jobs.Commands.CreateJobApplication
             };
             _context.JobApplications.Add(jobApplication);
             await _context.SaveChangesAsync(cancellationToken);
-            foreach(var r in request.Responses)
+
+            request.Responses.ForEach(r => _context.JobApplicationQuestionResponses.Add(new JobApplicationQuestionResponse
             {
-                _context.JobApplicationQuestionResponses.Add(new JobApplicationQuestionResponse
-                {
-                    JobApplicationQuestionID = r.JobApplicationQuestionID,
-                    Response = r.Response.ToString()
-                });
-            }
+                JobApplicationQuestionID = r.JobApplicationQuestionID,
+                Response = r.Response.ToString()
+            }));
+
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }

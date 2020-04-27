@@ -2,7 +2,7 @@
 using Domain.Entities;
 using System;
 
-namespace Application.Users.GetUser
+namespace Application.Users.Queries.GetJobApplications
 {
     public class JobApplicationModel : IMapFrom<JobApplication>
     {

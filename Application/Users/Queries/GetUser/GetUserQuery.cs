@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
-using Domain.Entities;
 using Domain.Services.GitHub.Interfaces;
 using Infrastructure.Data;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Users.GetUser
+namespace Application.Users.Queries.GetUser
 {
     public class GetUserQuery : IRequest<GetUserModel>
     {
@@ -40,36 +37,13 @@ namespace Application.Users.GetUser
         {
             var data = from u in _context.Users.AsEnumerable()
                        join ust in _context.UserStatusTypes.AsEnumerable() on u.UserStatusTypeID equals ust.ID
-                       join ja in _context.JobApplications.AsEnumerable() on u.ID equals ja.UserID into tmp_ja 
-                       from ja in tmp_ja.DefaultIfEmpty()
-                       join j in _context.Jobs.AsEnumerable() on ja?.JobID equals j.ID into tmp_j 
-                       from j in tmp_j.DefaultIfEmpty()
-                       join c in _context.Companies.AsEnumerable() on j?.CompanyID equals c.ID into tmp_c 
-                       from c in tmp_c.DefaultIfEmpty()
-                       join jast in _context.JobApplicationStatusTypes.AsEnumerable() on ja?.JobApplicationStatusTypeID equals jast.ID into tmp_jast 
-                       from jast in tmp_jast.DefaultIfEmpty()
                        where u.ID == request.UserID
-                       select new { 
-                           u, 
-                           ja 
-                       };
-
+                       select u;
             if (data == null || data.FirstOrDefault() == null) return new GetUserModel();
-            var row = data.First();
-            var model = _mapper.Map<GetUserModel>(row.u);
-
-            var gUser = await _github.GetUser(row.u.GitHubLogin, row.u.GitHubToken);
+            var user = data.First();
+            var gUser = await _github.GetUser(user.GitHubLogin, user.GitHubToken);
+            var model = _mapper.Map<GetUserModel>(user);
             model.GitHubUser = _mapper.Map<GitHubUserModel>(gUser);
-
-            foreach (var r in data.Where(d => d.ja != null))
-            {
-                var ja = _mapper.Map<JobApplicationModel>(r.ja);
-                if (r.ja.IsActiveApplication())
-                    model.JobApplications.Add(ja);
-                else
-                    model.InactiveJobApplications.Add(ja);
-            }
-
             return model;
         }
     }

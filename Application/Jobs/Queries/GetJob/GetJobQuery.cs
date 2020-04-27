@@ -41,19 +41,25 @@ namespace Application.Jobs.Queries.GetJob
                        from ja in tmp_ja.DefaultIfEmpty()
                        join jast in _context.JobApplicationStatusTypes.AsEnumerable() on ja?.JobApplicationStatusTypeID equals jast.ID into tmp_jast
                        from jast in tmp_jast.DefaultIfEmpty()
+                       join sj in _context.SavedJobs.AsEnumerable() on new { JobID = j.ID, request.UserID } equals new { sj.JobID, sj.UserID } into tmp_sj
+                       from sj in tmp_sj.DefaultIfEmpty()
                        where j.ID == request.JobID
-                       select new { j, l, ja };
+                       select new { j, l, ja, sj };
 
             if (data?.FirstOrDefault() == null) return new GetJobModel();
             var job = data.First().j;
             var jobApp = data.LastOrDefault().ja;
-
+            var savedJob = data.First().sj;
             var model = _mapper.Map<GetJobModel>(job);
+            var map = new Dictionary<int, JobLocationModel>();
             foreach (var d in data)
-                model.Locations.Add(_mapper.Map<JobLocationModel>(d.l));
+                if (!map.ContainsKey(d.l.ID))
+                    map.Add(d.l.ID, _mapper.Map<JobLocationModel>(d.l));
 
             model.UserCanApply = jobApp == null || !jobApp.IsActiveApplication();
             model.IsAcceptingApplications = job.IsAcceptingApplications();
+            model.Locations = map.Values.ToList();
+            model.SavedJobID = savedJob != null ? savedJob.ID : 0;
             await Task.FromResult(0);
             return model;
         }

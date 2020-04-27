@@ -10,6 +10,7 @@ namespace Infrastructure.Data
 
         public DbSet<Company> Companies { get; set; }
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<JobSkill> JobSkills { get; set; }
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<JobApplicationQuestion> JobApplicationQuestions { get; set; }
         public DbSet<JobApplicationQuestionResponse> JobApplicationQuestionResponses { get; set; }
@@ -19,7 +20,10 @@ namespace Infrastructure.Data
         public DbSet<QuestionResponse> QuestionResponses { get; set; }
         public DbSet<QuestionValidation> QuestionValidations { get; set; }
         public DbSet<ResponseType> ResponseTypes { get; set; }
+        public DbSet<SavedJob> SavedJobs { get; set; }
+        public DbSet<Skill> Skills { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserSkill> UserSkills { get; set; }
         public DbSet<UserStatusType> UserStatusTypes { get; set; }
         public DbSet<ValidationRule> ValidationRules { get; set; }
 
@@ -32,11 +36,15 @@ namespace Infrastructure.Data
             modelBuilder.Entity<JobApplicationQuestionResponse>();
             modelBuilder.Entity<JobApplicationStatusType>();
             modelBuilder.Entity<JobLocation>();
+            modelBuilder.Entity<JobSkill>();
             modelBuilder.Entity<Question>();
             modelBuilder.Entity<QuestionResponse>();
             modelBuilder.Entity<QuestionValidation>();
             modelBuilder.Entity<ResponseType>();
+            modelBuilder.Entity<SavedJob>();
+            modelBuilder.Entity<Skill>();
             modelBuilder.Entity<User>();
+            modelBuilder.Entity<UserSkill>();
             modelBuilder.Entity<UserStatusType>();
             modelBuilder.Entity<ValidationRule>();
 

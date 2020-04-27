@@ -6,6 +6,9 @@ import { OAuthCallback } from './components/OAuthCallback';
 import { OAuth } from './components/OAuth';
 import { SignOut } from './components/SignOut';
 import { Account } from './components/account/Account';
+import { Settings } from './components/account/Settings';
+import { SavedJobs } from './components/account/SavedJobs';
+import { Collaborations } from './components/account/Collaborations';
 import { Job } from './components/job/Job';
 import { AuthProvider } from './context/AuthContext'
 
@@ -20,6 +23,9 @@ export default class App extends Component {
           <AuthProvider>
               <LayoutRoute exact path='/' component={Home} />
               <LayoutRoute exact path='/account' component={Account} />
+              <LayoutRoute exact path='/settings' component={Settings} />
+              <LayoutRoute exact path='/saved-jobs' component={SavedJobs} />
+              <LayoutRoute exact path='/collaborations' component={Collaborations} />
               <LayoutRoute exact path='/job/:id' component={Job} />
               <LayoutRoute exact path='/apply/:id' component={Apply} />
 

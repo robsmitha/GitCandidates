@@ -12,6 +12,7 @@ namespace Infrastructure.Data
     {
         public DbSet<Company> Companies { get; set; }
         public DbSet<Job> Jobs { get; set; }
+        public DbSet<JobSkill> JobSkills { get; set; }
         public DbSet<JobApplication> JobApplications { get; set; }
         public DbSet<JobApplicationQuestion> JobApplicationQuestions { get; set; }
         public DbSet<JobApplicationQuestionResponse> JobApplicationQuestionResponses { get; set; }
@@ -21,7 +22,10 @@ namespace Infrastructure.Data
         public DbSet<QuestionResponse> QuestionResponses { get; set; }
         public DbSet<QuestionValidation> QuestionValidations { get; set; }
         public DbSet<ResponseType> ResponseTypes { get; set; }
+        public DbSet<SavedJob> SavedJobs { get; set; }
+        public DbSet<Skill> Skills { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserSkill> UserSkills { get; set; }
         public DbSet<UserStatusType> UserStatusTypes { get; set; }
         public DbSet<ValidationRule> ValidationRules { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

@@ -4,6 +4,7 @@ using Application.Jobs.Commands.CreateJobApplication;
 using Application.Jobs.Queries.GetJob;
 using Application.Jobs.Queries.GetJobApplication;
 using Application.Jobs.Queries.GetJobs;
+using Application.Jobs.Queries.GetJobSkills;
 using Domain.Services.GitHub.Interfaces;
 using Infrastructure.Identity;
 using MediatR;
@@ -36,6 +37,11 @@ namespace GitCandidates.Controllers
         public async Task<ActionResult<List<GetJobModel>>> GetJob(int id)
         {
             return Ok(await _mediator.Send(new GetJobQuery(id, _identity.ClaimID)));
+        }
+        [HttpGet("GetJobSkills/{id}")]
+        public async Task<ActionResult<List<GetJobSkillModel>>> GetJobSkills(int id)
+        {
+            return Ok(await _mediator.Send(new GetJobSkillsQuery(id, _identity.ClaimID)));
         }
         [HttpGet("GetJobApplication/{id}")]
         public async Task<ActionResult<GetJobApplicationModel>> GetJobApplication(int id)
