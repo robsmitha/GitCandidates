@@ -32,7 +32,7 @@ export class Footer extends Component {
                             <div className="col-6 col-md">
                                 <h5>About</h5>
                                 <ul className="list-unstyled text-small">
-                                    <li><Link className="text-muted" to="/">How it works</Link></li>
+                                    <li><Link className="text-muted" to="/how-it-works">How it works</Link></li>
                                 </ul>
                             </div>
                             <div className="col-6 col-md">

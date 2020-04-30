@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Infrastructure.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,14 +12,12 @@ namespace Application.Users.Commands.SetSavedJob
 {
     public class SetSavedJobCommand : IRequest<bool>
     {
-        public int SavedJobID { get; set; }
         public int JobID { get; set; }
         public int UserID { get; set; }
-        public SetSavedJobCommand(int jobId, int userId, int savedJobId )
+        public SetSavedJobCommand(int jobId, int userId)
         {
             JobID = jobId;
             UserID = userId;
-            SavedJobID = savedJobId;
         }
     }
     public class SetSavedJobCommandHandler : IRequestHandler<SetSavedJobCommand, bool>
@@ -31,24 +30,16 @@ namespace Application.Users.Commands.SetSavedJob
 
         public async Task<bool> Handle(SetSavedJobCommand request, CancellationToken cancellationToken)
         {
-            SavedJob savedJob;
-            if(request.SavedJobID > 0)
-            {
-                savedJob = await _context.SavedJobs.FindAsync(request.SavedJobID);
+            if (await _context.SavedJobs.FirstOrDefaultAsync(j => j.JobID == request.JobID && j.UserID == request.UserID) is SavedJob savedJob)
                 _context.SavedJobs.Remove(savedJob);
-            }
             else
-            {
-                savedJob = new SavedJob
+                _context.SavedJobs.Add(new SavedJob
                 {
                     JobID = request.JobID,
                     UserID = request.UserID
-                };
-                _context.SavedJobs.Add(savedJob);
-            }
+                });
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
-
     }
 }

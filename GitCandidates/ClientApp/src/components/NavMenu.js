@@ -29,12 +29,12 @@ export class NavMenu extends Component {
 
     configureUI() {
         var navbar = document.querySelector('.main-nav').clientHeight;
-        document.querySelector('.header').style = 'padding-top: ' + navbar + 'px';
+        document.querySelector('.main-header').style = 'padding-top: ' + navbar + 'px';
     }
 
     render() {
         return (
-            <header className="header">
+            <header className="main-header">
                 <AuthConsumer>
                     {({ auth }) => (
                         <header>

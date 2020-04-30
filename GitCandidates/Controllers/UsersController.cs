@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Application.Users.Commands.SetSavedJob;
+using Application.Users.Commands.SetUserSkill;
 using Application.Users.Commands.WithdrawApplication;
 using Application.Users.Queries.GetJobApplications;
 using Application.Users.Queries.GetSavedJobs;
+using Application.Users.Queries.GetSettings;
 using Application.Users.Queries.GetUser;
 using Infrastructure.Identity;
 using MediatR;
@@ -42,6 +44,12 @@ namespace GitCandidates.Controllers
             return Ok(await _mediator.Send(new GetSavedJobsQuery(_identity.ClaimID)));
         }
 
+        [HttpGet("GetSettings")]
+        public async Task<ActionResult<GetSettingsModel>> GetSettings()
+        {
+            return Ok(await _mediator.Send(new GetSettingsQuery(_identity.ClaimID)));
+        }
+
         [HttpPost("WithdrawApplication")]
         public async Task<ActionResult<bool>> WithdrawApplication(WithdrawApplicationModel model)
         {
@@ -51,7 +59,13 @@ namespace GitCandidates.Controllers
         [HttpPost("SetSavedJob")]
         public async Task<ActionResult<bool>> SetSavedJob(SetSavedJobModel model)
         {
-            return Ok(await _mediator.Send(new SetSavedJobCommand(model.JobID, _identity.ClaimID, model.SavedJobID)));
+            return Ok(await _mediator.Send(new SetSavedJobCommand(model.JobID, _identity.ClaimID)));
+        }
+
+        [HttpPost("SetUserSkill")]
+        public async Task<ActionResult<bool>> SetUserSkill(SetUserSkillModel model)
+        {
+            return Ok(await _mediator.Send(new SetUserSkillCommand(model.SkillID, _identity.ClaimID)));
         }
     }
 }

@@ -1,20 +1,18 @@
-﻿using Domain.Entities;
-using FluentValidation;
+﻿using FluentValidation;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Users.Commands.SetSavedJob
+namespace Application.Users.Commands.SetUserSkill
 {
-    public class SetSavedJobCommandValidator : AbstractValidator<SetSavedJobCommand>
+    public class SetUserSkillCommandValidator : AbstractValidator<SetUserSkillCommand>
     {
         private readonly IApplicationContext _context;
-        public SetSavedJobCommandValidator(IApplicationContext context)
+        public SetUserSkillCommandValidator(IApplicationContext context)
         {
             _context = context;
         }

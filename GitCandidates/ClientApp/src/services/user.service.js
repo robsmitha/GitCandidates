@@ -5,7 +5,9 @@ export const userService = {
     getJobApplications,
     withdrawApplication,
     setSavedJob,
-    getSavedJobs
+    getSavedJobs,
+    getSettings,
+    setUserSkill
 };
 
 function getUser() {
@@ -20,10 +22,18 @@ function getSavedJobs() {
     return get(`users/getSavedJobs`)
 }
 
+function getSettings() {
+    return get(`users/getSettings`)
+}
+
 function withdrawApplication(data) {
     return post(`users/withdrawApplication`, data)
 }
 
 function setSavedJob(data) {
     return post(`users/setSavedJob`, data)
+}
+
+function setUserSkill(data) {
+    return post(`users/setUserSkill`, data)
 }

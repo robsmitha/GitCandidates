@@ -37,19 +37,13 @@ export class SavedJobs extends Component {
     }
     setSavedJob = event => {
         let btn = this.getButton(event.target)
-        let id = Number(btn.value);
         let jobId = btn.getAttribute('data-job-id')
-
         let name = btn.getAttribute('data-name')
         let company = btn.getAttribute('data-company')
-
         if (window.confirm(`Are you sure you want to unsave the job: ${name} at ${company}?`)) {
-
             let data = {
-                savedJobID: id,
                 jobID: Number(jobId)
             }
-
             userService.setSavedJob(data)
                 .then(data => data ? this.populateSavedJobs() : console.log(data))
         }
@@ -106,7 +100,7 @@ export class SavedJobs extends Component {
             <div>
                 <div className="list-group list-group-flush mb-3">
                     {savedJobs.map((a, index) =>
-                        <div className="list-group-item" key={a.id}>
+                        <div className="list-group-item" key={a.jobID}>
                             <div className="d-flex w-100 justify-content-between">
                                 <Link to={'/job/:id'.replace(':id', a.jobID)} className="text-decoration-none h5 mb-1">
                                     {a.jobName}
@@ -118,7 +112,6 @@ export class SavedJobs extends Component {
                                 <button className="btn btn-link btn-sm float-right pr-0"
                                     type="button"
                                     data-job-id={a.jobID}
-                                    value={a.id}
                                     data-name={a.jobName}
                                     data-company={a.jobCompanyGitHubLogin}
                                     onClick={setSavedJob}>

@@ -98,7 +98,7 @@ export class Apply extends Component {
             jobId: Number(this.state.id),
             responses: responses
         }
-        console.log(data)
+
         jobService.createJobApplication(data)
             .then(data => {
                 if (data) {
