@@ -13,5 +13,6 @@ namespace GitCandidates.Services
         public string GitHubClientID { get; set; }
         public string GitHubClientSecret { get; set; }
         public string GitHubRedirectUrl { get; set; }
+        public string GoogleApiKey { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Jobs.Queries.GetJobs
+namespace Application.Jobs.Queries.SearchJobs
 {
 
     public class SearchJobsRequest
@@ -11,5 +11,6 @@ namespace Application.Jobs.Queries.GetJobs
         public double? lat { get; set; }
         public double? lng { get; set; }
         public int? miles { get; set; }
+        public string location { get; set; }
     }
 }

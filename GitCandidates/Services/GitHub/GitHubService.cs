@@ -28,7 +28,7 @@ namespace GitCandidates.Services.GitHub
 
         public async Task<IGitHubUser> GetUser(string username, string accessToken)
         {
-            return _client.Get<GitHubUser>(accessToken, $"/users/{username}");
+            return await _client.GetAsync<GitHubUser>(accessToken, $"/users/{username}");
         }
 
         public async Task<IAccessToken> GenerateOAuthAccessToken(IGenerateOAuthAccessToken generateOAuthAccessToken)

@@ -11,10 +11,28 @@ export const authService = {
     clearAppUser,
     gitHubOAuthUrl,
     gitHubOAuthCallback,
+    getClient,
     appUser: appUserSubject.asObservable(),
     get appUserValue() { return appUserSubject.value }
 };
 
+async function getClient() {
+    let ip = await fetch('https://api.ipify.org?format=json');
+    let data = await ip.json();
+    if (data.ip) {
+        let geo = await fetch(`https://api.hackertarget.com/geoip/?q=${data.ip}`);
+        let text = await geo.text();
+        var client = {}
+        var lines = text.split('\n')
+        for (let i = 0; i < lines.length; i++) {
+            var kv = lines[i].split(':');
+            var k = kv[0].replace(/\s+/g, '')
+            var v = kv[1].trim()
+            client[k] = v;
+        }
+        return client;
+    }
+}
 
 
 function gitHubOAuthUrl(login) {

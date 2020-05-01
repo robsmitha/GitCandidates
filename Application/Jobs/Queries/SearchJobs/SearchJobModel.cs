@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Jobs.Queries.GetJobs
+namespace Application.Jobs.Queries.SearchJobs
 {
-    public class GetJobsModel : IMapFrom<Job>
+    public class SearchJobModel : IMapFrom<Job>
     {
-        public GetJobsModel()
+        public SearchJobModel()
         {
             Locations = new List<JobLocationModel>();
         }

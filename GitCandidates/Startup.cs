@@ -3,9 +3,11 @@ using CleanersNextDoor.Common;
 using CleanersNextDoor.Services;
 using CleanersNextDoor.Services.GitHub;
 using Domain.Services.GitHub.Interfaces;
+using Domain.Services.GoogleGeocode.Interfaces;
 using GitCandidates.Common;
 using GitCandidates.Services;
 using GitCandidates.Services.GitHub;
+using GitCandidates.Services.GoogleGeocode;
 using Infrastructure;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -82,6 +84,7 @@ namespace GitCandidates
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<IGitHubService, GitHubService>();
             services.AddScoped<IGitHubClient, GitHubClient>();
+            services.AddScoped<IGoogleGeocodeService, GoogleGeocodeService>();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

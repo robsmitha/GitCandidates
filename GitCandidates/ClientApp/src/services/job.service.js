@@ -1,15 +1,15 @@
 ﻿import { post, get } from './api.service';
 
 export const jobService = {
-    getJobs,
+    searchJobs,
     getJob,
     getJobApplication,
     createJobApplication,
     getJobSkills
 };
 
-function getJobs(data) {
-    return post(`jobs/getjobs`, data)
+function searchJobs(data) {
+    return post(`jobs/searchJobs`, data)
 }
 
 function getJob(id) {

@@ -4,6 +4,8 @@ import validate from './../helpers/Validate'
 import TextInput from './../helpers/TextInput'
 import Octicon, { Telescope, Location } from '@primer/octicons-react';
 import { jobService } from './../services/job.service'
+import Loading from './../helpers/Loading';
+import { authService } from '../services/auth.service';
 
 export class Home extends Component {
 
@@ -30,17 +32,57 @@ export class Home extends Component {
                     errors: []
                 }
             },
-            jobs: [],
-            loading: true
+            jobs: null,
+            location: '',
+            displayLocation: ''
         }
     }
 
     componentDidMount() {
-        jobService.getJobs({ })
-            .then(data => this.setState({
-                loading: false,
-                jobs: data
-            }))
+        this.populateJobs({})
+    }
+
+    populateJobs(args) {
+        jobService.searchJobs(args)
+            .then(data => {
+                const updatedControls = {
+                    ...this.state.formControls
+                }
+                updatedControls.location.value = data.displayLocation;
+                this.setState({
+                    jobs: data.jobs,
+                    displayLocation: data.displayLocation,
+                    formControls: updatedControls
+                })
+            })
+    }
+
+    useMyLocation = event => {
+        this.getLocation()
+    }
+
+    getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                let args = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                }
+                this.populateJobs(args)
+            });
+        } else {
+            console.log("Geolocation is not supported by this browser.")
+            this.getClient()
+        }
+    }
+
+    async getClient() {
+        let client = await authService.getClient();
+        let args = {
+            lat: Number(client.Latitude),
+            lng: Number(client.Longitude)
+        }
+        this.populateJobs(args)
     }
 
     changeHandler = event => {
@@ -77,27 +119,25 @@ export class Home extends Component {
 
     submitHandler = event => {
         event.preventDefault()
-        let data = {
-            keyword: this.state.formControls.keyword.value,
-            location: this.state.formControls.location.value
+        const { keyword, location } = this.state.formControls;
+        let args = {
+            keyword: keyword.value,
+            location: location.value
         }
-        jobService.getJobs(data)
-            .then(data => this.setState({
-                loading: false,
-                jobs: data
-            }))
+        this.populateJobs(args)
     }
 
     render() {
-        let contents = this.state.loading
-            ? Home.renderLoading()
-            : Home.renderJobs(this.state.jobs)
+        const { jobs, formControls, displayLocation } = this.state
+        let contents = jobs == null
+            ? <Loading message="Loading opportunities..." />
+            : Home.renderJobs(jobs)
         return (
             <div className="mb-4">
                 <header className="bg-light py-3 mb-5">
                     <div className="container h-100">
                         <div className="row h-100 align-items-center">
-                            <div className="col-md-8 mx-auto">
+                            <div className="col-md-12 mx-auto">
                                 <div className="my-5">
                                     <h1 className="display-4">
                                         <Octicon icon={Telescope} size="large" />
@@ -108,30 +148,36 @@ export class Home extends Component {
                                     </p>
                                     <form onSubmit={this.submitHandler}>
                                         <div className="form-row">
-                                            <div className="col-12 col-md-5 mb-2 mb-md-0">
+                                            <div className="col-12 col-md-4 mb-2 mb-md-0">
                                                 <TextInput name="keyword"
-                                                    placeholder={this.state.formControls.keyword.placeholder}
-                                                    label={this.state.formControls.keyword.label}
-                                                    value={this.state.formControls.keyword.value}
+                                                    placeholder={formControls.keyword.placeholder}
+                                                    label={formControls.keyword.label}
+                                                    value={formControls.keyword.value}
                                                     onChange={this.changeHandler}
-                                                    touched={this.state.formControls.keyword.touched ? 1 : 0}
-                                                    valid={this.state.formControls.keyword.valid ? 1 : 0}
-                                                    errors={this.state.formControls.keyword.errors} />
+                                                    touched={formControls.keyword.touched ? 1 : 0}
+                                                    valid={formControls.keyword.valid ? 1 : 0}
+                                                    errors={formControls.keyword.errors} />
                                             </div>
-                                            <div className="col-12 col-md-5 mb-2 mb-md-0">
+                                            <div className="col-12 col-md-4 mb-2 mb-md-0">
                                                 <TextInput name="location"
-                                                    placeholder={this.state.formControls.location.placeholder}
-                                                    label={this.state.formControls.location.label}
-                                                    value={this.state.formControls.location.value}
+                                                    placeholder={formControls.location.placeholder}
+                                                    label={formControls.location.label}
+                                                    value={formControls.location.value}
                                                     onChange={this.changeHandler}
-                                                    touched={this.state.formControls.location.touched ? 1 : 0}
-                                                    valid={this.state.formControls.location.valid ? 1 : 0}
-                                                    errors={this.state.formControls.location.errors} />
+                                                    touched={formControls.location.touched ? 1 : 0}
+                                                    valid={formControls.location.valid ? 1 : 0}
+                                                    errors={formControls.location.errors} />
                                             </div>
                                             <div className="col-12 col-md-2">
                                                 <br />
                                                 <button type="submit" className="btn btn-block mt-2 btn-success">
                                                     Search
+                                                </button>
+                                            </div>
+                                            <div className="col-12 col-md-2">
+                                                <br />
+                                                <button type="button" className="btn btn-secondary mt-2 btn-block" onClick={this.useMyLocation}>
+                                                    Use My Location
                                                 </button>
                                             </div>
                                         </div>
@@ -142,65 +188,58 @@ export class Home extends Component {
                     </div>
                 </header>
                 <div className="container">
-                    <h2 className="h3 border-bottom pb-2 mb-4">
-                        <Octicon icon={Location} size="medium" />&nbsp;
-                        Jobs near you
+                    <h2 className="h3 pb-2 mb-2">
+                        Recent Jobs
                     </h2>
+                    <div className="mb-2">
+                        <Octicon icon={Location} size="small" />&nbsp;
+                        <small className="text-muted">
+                            {displayLocation == null || displayLocation.length == 0
+                                ? <span>All locations</span>
+                                : <span>{displayLocation}</span>}
+                        </small>
+                    </div>
                     {contents}
                 </div>
             </div>
         );
     }
-    static renderLoading() {
-        return (
-            <div className="vh-100 d-flex align-items-stretch py-5">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                            <div className="text-center">
-                                <p className="lead">
-                                    <span className="spinner-grow" role="status">
-                                        <span className="sr-only">Loading...</span>
-                                    </span>
-                                    Loading opportunities..
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            )
-    }
+
     static renderJobs(jobs) {
         return (
-            <div className="row">
-                {jobs.map(j =>
-                    <div className="col-md-3 mb-4" key={j.id}>
-                        <Link to={'/job/:id'.replace(':id', j.id)} className="text-decoration-none">
-                            <div className="card h-100">
-                                <div className="card-body d-flex flex-column">
-                                    <h5 className="card-title">{j.name}</h5>
-                                    <strong className="d-block card-text text-dark mb-1">
-                                        {j.companyGitHubLogin}
-                                    </strong>
-                                    <small className="d-block text-muted">
-                                        {j.locations.map((l, index) =>
-                                            <span key={l.id}>
-                                                <span>{l.location}</span>
-                                                {index < j.locations.length - 1
-                                                    ? <span>,</span>
-                                                    : <span></span>}
-                                            </span>
-                                        )}
-                                    </small>
-                                    <small className="text-muted mt-auto">
-                                        {j.posted}
-                                    </small>
+            <div>
+                <div hidden={jobs.length > 0}>
+                    No jobs to display. Please try a different location.
+                </div>
+                <div className="row">
+                    {jobs.map(j =>
+                        <div className="col-md-3 mb-4" key={j.id}>
+                            <Link to={'/job/:id'.replace(':id', j.id)} className="text-decoration-none">
+                                <div className="card h-100">
+                                    <div className="card-body d-flex flex-column">
+                                        <h5 className="card-title">{j.name}</h5>
+                                        <strong className="d-block card-text text-dark mb-1">
+                                            {j.companyGitHubLogin}
+                                        </strong>
+                                        <small className="d-block text-muted">
+                                            {j.locations.map((l, index) =>
+                                                <span key={l.id}>
+                                                    <span>{l.location}</span>
+                                                    {index < j.locations.length - 1
+                                                        ? <span>,</span>
+                                                        : <span></span>}
+                                                </span>
+                                            )}
+                                        </small>
+                                        <small className="text-muted mt-auto">
+                                            {j.posted}
+                                        </small>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </div>
-                )}
+                            </Link>
+                        </div>
+                    )}
+                </div>
             </div>
             )
     }

@@ -250,6 +250,47 @@ namespace Infrastructure.Data
             context.Jobs.AddRange(jobs);
             context.SaveChanges();
 
+
+            var frontendLocations = new List<JobLocation>
+            {
+                new JobLocation
+                {
+                    City = "Tampa",
+                    StateAbbreviation = "FL",
+                    Latitude = 27.950575,
+                    Longitude = -82.457176,
+                    JobID = frontend.ID
+                },
+                new JobLocation
+                {
+                    City = "Tallahassee",
+                    StateAbbreviation = "FL",
+                    Latitude = 30.455000,
+                    Longitude = -84.253334,
+                    JobID = frontend.ID
+                },
+            };
+
+            var cloudLocations = new List<JobLocation>
+            {
+                new JobLocation
+                {
+                    City = "Tallahassee",
+                    StateAbbreviation = "FL",
+                    Latitude = 30.455000,
+                    Longitude = -84.253334,
+                    JobID = cloud.ID
+                },
+                new JobLocation
+                {
+                    City = "New York",
+                    StateAbbreviation = "NY",
+                    Latitude = 40.712776,
+                    Longitude =  -74.005974,
+                    JobID = cloud.ID
+                },
+            };
+
             var jobLocations = new List<JobLocation>
             {
                 new JobLocation
@@ -262,29 +303,16 @@ namespace Infrastructure.Data
                 },
                 new JobLocation
                 {
-                    City = "Tampa",
-                    StateAbbreviation = "FL",
-                    Latitude = 27.950575,
-                    Longitude = -82.457176,
-                    JobID = frontend.ID
-                },
-                new JobLocation
-                {
                     City = "Redmond",
                     StateAbbreviation = "WA",
                     Latitude = 47.751076,
                     Longitude =  -120.740135,
                     JobID = senior.ID
-                },
-                new JobLocation
-                {
-                    City = "New York",
-                    StateAbbreviation = "NY",
-                    Latitude = 40.712776,
-                    Longitude =  -74.005974,
-                    JobID = cloud.ID
-                },
+                }
             };
+
+            jobLocations.AddRange(frontendLocations);
+            jobLocations.AddRange(cloudLocations);
             context.JobLocations.AddRange(jobLocations);
             foreach (var job in jobs)
             {
@@ -420,28 +448,6 @@ namespace Infrastructure.Data
                 {
                     JobID = fullstack.ID,
                     SkillID = javaScript.ID
-                },
-            });
-            context.UserSkills.AddRange(new[] {
-                new UserSkill
-                {
-                    UserID = robsmitha.ID,
-                    SkillID = cSharp.ID,
-                },
-                new UserSkill
-                {
-                    UserID = robsmitha.ID,
-                    SkillID = javaScript.ID,
-                },
-                new UserSkill
-                {
-                    UserID = robsmitha.ID,
-                    SkillID = sfrontend.ID,
-                },
-                new UserSkill
-                {
-                    UserID = robsmitha.ID,
-                    SkillID = sbackend.ID,
                 },
             });
             context.SaveChanges();

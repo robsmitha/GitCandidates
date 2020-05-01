@@ -4,7 +4,8 @@ import { jobService } from '../../services/job.service';
 import { AuthConsumer } from './../../context/AuthContext';
 import Octicon, { Pencil } from '@primer/octicons-react';
 import Question from '../../helpers/Question';
-import validate from './../../helpers/Validate'; 
+import validate from './../../helpers/Validate';
+import Loading from './../../helpers/Loading'
 
 export class Apply extends Component {
 
@@ -12,7 +13,7 @@ export class Apply extends Component {
         super(props)
         this.state = {
             loading: true,
-            id: this.props.match.params.id,
+            jobid: this.props.match.params.id,
             application: null,
             formControls: null,
             formIsValid: false
@@ -20,7 +21,7 @@ export class Apply extends Component {
     }
 
     componentDidMount() {
-        jobService.getJobApplication(this.state.id)
+        jobService.getJobApplication(this.state.jobid)
             .then(data => {
                 let formControls = {};
                 data.questions.forEach(q => {
@@ -95,7 +96,7 @@ export class Apply extends Component {
             })
 
         let data = {
-            jobId: Number(this.state.id),
+            jobId: Number(this.state.jobid),
             responses: responses
         }
 
@@ -109,7 +110,7 @@ export class Apply extends Component {
 
     render() {
         let contents = this.state.loading
-            ? Apply.renderLoading()
+            ? <Loading message="Loading job application..." />
             : this.renderApplication()
         return (
             <div>
@@ -117,7 +118,7 @@ export class Apply extends Component {
                     {({ auth }) => (
                         <div>
                             {!auth
-                                ? <Redirect to={'/job/:id'.replace(':id', this.state.id)} />
+                                ? <Redirect to={'/job/:id'.replace(':id', this.state.jobid)} />
                                 : contents}
                         </div>
                     )}
@@ -127,8 +128,7 @@ export class Apply extends Component {
     }
 
     renderApplication() {
-        const application = this.state.application;
-        const jobid = this.state.id
+        const { application, jobid } = this.state
         return (
 
             <div className="d-flex align-items-stretch py-5">
@@ -181,27 +181,6 @@ export class Apply extends Component {
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    static renderLoading() {
-        return (
-            <div className="d-flex align-items-stretch py-5">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                            <div className="text-center">
-                                <p className="lead">
-                                    <span className="spinner-grow" role="status">
-                                        <span className="sr-only">Loading...</span>
-                                    </span>
-                                    Loading job application..
-                                </p>
                             </div>
                         </div>
                     </div>

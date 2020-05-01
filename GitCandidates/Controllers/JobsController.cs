@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Application.Jobs.Commands.CreateJobApplication;
 using Application.Jobs.Queries.GetJob;
 using Application.Jobs.Queries.GetJobApplication;
-using Application.Jobs.Queries.GetJobs;
+using Application.Jobs.Queries.SearchJobs;
 using Application.Jobs.Queries.GetJobSkills;
 using Domain.Services.GitHub.Interfaces;
 using Infrastructure.Identity;
@@ -27,10 +27,10 @@ namespace GitCandidates.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("GetJobs")]
-        public async Task<ActionResult<List<GetJobsModel>>> GetJobs(SearchJobsRequest request)
+        [HttpPost("SearchJobs")]
+        public async Task<ActionResult<List<SearchJobsModel>>> SearchJobs(SearchJobsRequest request)
         {
-            return Ok(await _mediator.Send(new GetJobsQuery(request.keyword, request.lat, request.lng, request.miles)));
+            return Ok(await _mediator.Send(new SearchJobsQuery(request)));
         }
 
         [HttpGet("GetJob/{id}")]

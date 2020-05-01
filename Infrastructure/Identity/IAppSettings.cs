@@ -7,5 +7,6 @@
         string GitHubClientID { get; set; }
         string GitHubClientSecret { get; set; }
         string GitHubRedirectUrl { get; set; }
+        string GoogleApiKey { get; set; }
     }
 }
