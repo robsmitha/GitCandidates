@@ -51,7 +51,7 @@ function generateQuestion(options, props) {
 function renderText(options, props) {
     return (
         <div className="form-group" hidden={options.hidden}>
-            <label htmlFor={options.name} className="font-weight-light">{options.label}</label>
+            <label htmlFor={options.name}>{options.label}</label>
             <input className={options.className} {...props} />
             {options.errors.map(e =>
                 <div key={e} className="text-danger">
@@ -65,7 +65,7 @@ function renderText(options, props) {
 function renderRadio(options, props) {
     return (
         <div className="form-group" hidden={options.hidden}>
-            <label htmlFor={options.name} className="font-weight-light">{options.label}</label>
+            <label htmlFor={options.name}>{options.label}</label>
             {options.responses.map((r, index) =>
                 <div key={r.id} className="custom-control custom-radio">
                     <input id={'r_' + r.id} {...props} className={options.className} />

@@ -23,6 +23,9 @@ namespace Application.Jobs.Queries.GetJob
         public string PostHTML { get; set; }
         public int CompanyID { get; set; }
         public string CompanyGitHubLogin { get; set; }
+        public string CompanyFounded { get; set; }
+        public string CompanySize { get; set; }
+        public string CompanyLocation { get; set; }
         public DateTime PostAt { get; set; }
         public bool? AllowRemote { get; set; }
         public string TeamSize { get; set; }
@@ -35,6 +38,7 @@ namespace Application.Jobs.Queries.GetJob
         public bool UserHasActiveApplication { get; set; }
         public int SavedJobID { get; set; }
         public bool IsAcceptingApplications { get; set; }
+        public string UserGitHubLogin { get; set; }
         public List<JobLocationModel> Locations { get;set; }
         public List<BenefitModel> Benefits { get; set; }
         public List<ResponsibilityModel> Responsibilities { get; set; }

@@ -2,19 +2,20 @@
 import { Redirect, Link, useHistory} from 'react-router-dom';
 import { jobService } from '../../services/job.service';
 import { AuthConsumer } from './../../context/AuthContext';
-import Octicon, { Pencil } from '@primer/octicons-react';
+import Octicon, { Pencil, ChevronLeft, ChevronRight, Tasklist } from '@primer/octicons-react';
 import Question from '../../helpers/Question';
 import validate from './../../helpers/Validate';
 import Loading from './../../helpers/Loading'
+import { Row, Col } from 'reactstrap';
+
 
 export class Apply extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            loading: true,
             jobid: this.props.match.params.id,
-            application: null,
+            job: null,
             formControls: null,
             formIsValid: false
         }
@@ -42,8 +43,7 @@ export class Apply extends Component {
                 })
 
                 this.setState({
-                    loading: false,
-                    application: data,
+                    job: data.job,
                     formControls: formControls,
                     formIsValid: formControls.length == 0
                 })
@@ -85,6 +85,9 @@ export class Apply extends Component {
 
     submitHandler = event => {
         event.preventDefault()
+
+        if (!this.state.formIsValid) return
+
         let responses = []
         Object.keys(this.state.formControls)
             .map((name, index) => {
@@ -102,89 +105,166 @@ export class Apply extends Component {
 
         jobService.createJobApplication(data)
             .then(data => {
-                if (data) {
+                if (data === true) {
                     this.props.history.push('/account')
+                }
+                else {
+                    console.log(data)
                 }
             })
     }
 
     render() {
-        let contents = this.state.loading
-            ? <Loading message="Loading job application..." />
-            : this.renderApplication()
         return (
-            <div>
-                <AuthConsumer>
-                    {({ auth }) => (
-                        <div>
-                            {!auth
-                                ? <Redirect to={'/job/:id'.replace(':id', this.state.jobid)} />
-                                : contents}
-                        </div>
-                    )}
-                </AuthConsumer>
-            </div>
+            <AuthConsumer>
+                {({ auth }) => (
+                    <div>
+                        {!auth
+                            ? <Redirect to={'/job/:id'.replace(':id', this.state.jobid)} />
+                            : this.renderLayout()}
+                    </div>
+                )}
+            </AuthConsumer>
         );
     }
 
-    renderApplication() {
-        const { application, jobid } = this.state
+    renderLayout() {
+        const { job, jobid, formControls, formIsValid } = this.state
         return (
-
-            <div className="d-flex align-items-stretch py-5">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                            <div className="text-center">
-                                <Octicon icon={Pencil} size="medium" />
-                                <Link to={'/job/:id'.replace(':id', jobid)} className="text-decoration-none">
-                                    <h1 className="h3">
-                                        {application.jobName}
-                                    </h1>
-                                </Link>
-                                <strong className="d-block">
-                                    {application.companyGitHubLogin}
-                                </strong>
-                                <hr className="w-25" />
-
-                                <form onSubmit={this.submitHandler}>
-                                    <div hidden={this.state.formControls.length === 0}>
-                                        <div className="list-group">
-                                            <h4 className="list-group-item rounded-0 lead">
-                                                Please answer the following question{application.questions.length === 1 ? '' : 's'}
-                                            </h4>
-                                            {Object.keys(this.state.formControls).map((name, index) =>
-                                                <div className="list-group-item" key={name}>
-                                                    <Question
-                                                        label={this.state.formControls[name].label}
-                                                        placeholder={this.state.formControls[name].placeholder}
-                                                        type={this.state.formControls[name].type}
-                                                        responses={this.state.formControls[name].responses}
-                                                        errors={this.state.formControls[name].errors}
-                                                        validationrules={this.state.formControls[name].validationRules}
-                                                        questionid={this.state.formControls[name].questionId}
-                                                        name={name}
-                                                        onChange={this.changeHandler}
-                                                        touched={this.state.formControls[name].touched ? 1 : 0}
-                                                        valid={this.state.formControls[name].valid ? 1 : 0}
-                                                        min={this.state.formControls[name].min}
-                                                        max={this.state.formControls[name].max}
-                                                    />
-                                                </div>
-                                            )}
-                                            <button type="submit" className="list-group-item list-group-item-success list-group-item-action" disabled={!this.state.formIsValid}>
-                                                Submit application
-                                            </button>
-                                            <Link to={'/job/:id'.replace(':id', jobid)} className="list-group-item list-group-item-action rounded-0">
-                                                Discard application
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+            <div className="container py-3">
+                <div className="row">
+                    <div className="col-md-8">
+                        <h1 className="mb-1 h6 text-primary text-uppercase">
+                            Questionnaire
+                        </h1>
+                        <h2 className="h4">
+                            Some quick questions
+                        </h2>
+                        {job === null
+                            ? <Loading message="Loading questions, please wait.." />
+                            : Apply.renderApplication(formControls, formIsValid, jobid, this.changeHandler, this.submitHandler)}
+                    </div>
+                    <div className="col-md">
+                        {job === null
+                            ? <Loading />
+                            : Apply.renderJob(job)
+                        }
                     </div>
                 </div>
+            </div>
+        )
+    }
+    static renderApplication(formControls, formIsValid, jobid, changeHandler, submitHandler) {
+        return (
+            <form onSubmit={submitHandler}>
+                <div hidden={formControls.length === 0}>
+                    <div className="mb-3">
+                        {Object.keys(formControls).map((name, index) =>
+                            <div className={'border-bottom '.concat(index == 0 ? 'pb-2' : 'pt-2')} key={name} >
+                                <Question
+                                    label={formControls[name].label}
+                                    placeholder={formControls[name].placeholder}
+                                    type={formControls[name].type}
+                                    responses={formControls[name].responses}
+                                    errors={formControls[name].errors}
+                                    validationrules={formControls[name].validationRules}
+                                    questionid={formControls[name].questionId}
+                                    name={name}
+                                    onChange={changeHandler}
+                                    touched={formControls[name].touched ? 1 : 0}
+                                    valid={formControls[name].valid ? 1 : 0}
+                                    min={formControls[name].min}
+                                    max={formControls[name].max}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <Row>
+                    <Col>
+                        <Link to={'/job/:id'.replace(':id', jobid)} className="btn btn-light">
+                            <Octicon icon={ChevronLeft} size="small" />&nbsp;Back
+                        </Link>
+                    </Col>
+                    <Col>
+                        <button type="submit" className="btn btn-primary float-right" disabled={!formIsValid}>
+                            Submit&nbsp;<Octicon icon={ChevronRight} size="small" />
+                        </button>
+                    </Col>
+                </Row>
+            </form>
+            )
+    }
+    static renderJob(job) {
+        return (
+            <div>
+                <h4 className="mb-1 h6 text-primary text-uppercase">
+                    {job.companyGitHubLogin}
+                </h4>
+                <h5 className="h5 mb-0">
+                    {job.name}
+                </h5>
+                <small className="d-block text-muted mb-2">
+                    {job.locations.map((l, index) =>
+                        <span key={l.id}>
+                            <span>{l.location}</span>
+                            {index < job.locations.length - 1
+                                ? <span>,</span>
+                                : <span></span>}
+                        </span>
+                    )}
+                </small>
+
+                <Row>
+                    <Col xs="6">
+                        <strong className="d-block">
+                            Job Type
+                            </strong>
+                        <small className="d-block text-muted">
+                            {job.jobTypeName}
+                        </small>
+                    </Col>
+                    <Col md="6">
+                        <strong className="d-block">
+                            Seniority Level
+                            </strong>
+                        <small className="d-block text-muted">
+                            {job.seniorityLevelName}
+                        </small>
+                    </Col>
+                    <Col md="6">
+                        <strong className="d-block">
+                            Remote
+                            </strong>
+                        <small className="d-block text-muted">
+                            {job.allowRemote === null ? 'Not specified' : job.allowRemote === true ? 'Yes' : 'No'}
+                        </small>
+                    </Col>
+                    <Col md="6">
+                        <strong className="d-block">
+                            Team Size
+                            </strong>
+                        <small className="d-block text-muted">
+                            {job.teamSize}
+                        </small>
+                    </Col>
+                    <Col md="6">
+                        <strong className="d-block">
+                            Salary
+                            </strong>
+                        <small className="d-block text-muted">
+                            {job.minSalary} - {job.maxSalary}
+                        </small>
+                    </Col>
+                    <Col md="6">
+                        <strong className="d-block">
+                            Travel
+                            </strong>
+                        <small className="d-block text-muted">
+                            {job.travel}
+                        </small>
+                    </Col>
+                </Row>
             </div>
         )
     }

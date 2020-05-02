@@ -34,11 +34,15 @@ namespace Application.Jobs.Queries.GetJobApplication
         }
         public async Task<GetJobApplicationModel> Handle(GetJobApplicationQuery request, CancellationToken cancellationToken)
         {
-            var data = from jaq in _context.JobApplicationQuestions.AsEnumerable()
+            var data = from j in _context.Jobs.AsEnumerable()
+                       join jaq in _context.JobApplicationQuestions.AsEnumerable() on j.ID equals jaq.JobID
+                       join sl in _context.SeniorityLevels.AsEnumerable() on j.SeniorityLevelID equals sl.ID
+                       join jt in _context.JobTypes.AsEnumerable() on j.JobTypeID equals jt.ID
+                       join c in _context.Companies.AsEnumerable() on j.CompanyID equals c.ID
+                       join u in _context.Users.AsEnumerable() on j.UserID equals u.ID
+                       join l in _context.JobLocations.AsEnumerable() on j.ID equals l.JobID
                        join q in _context.Questions.AsEnumerable() on jaq.QuestionID equals q.ID
                        join qrt in _context.ResponseTypes.AsEnumerable() on q.ResponseTypeID equals qrt.ID
-                       join j in _context.Jobs.AsEnumerable() on jaq.JobID equals j.ID
-                       join c in _context.Companies.AsEnumerable() on j.CompanyID equals c.ID
                        join qr in _context.QuestionResponses.AsEnumerable() on jaq.QuestionID equals qr.QuestionID into tmp_qr
                        from qr in tmp_qr.DefaultIfEmpty()
                        join qv in _context.QuestionValidations.AsEnumerable() on jaq.QuestionID equals qv.QuestionID into tmp_qv
@@ -49,40 +53,50 @@ namespace Application.Jobs.Queries.GetJobApplication
                        select new {
                            jaq, 
                            qr,
-                           qv
+                           qv,
+                           j,
+                           l
                        };
-
-            if (data?.FirstOrDefault() == null) return new GetJobApplicationModel();
-
-            var map = new Dictionary<int, JobApplicationQuestionModel>();
+            var first = data?.FirstOrDefault();
+            if (first == null) return new GetJobApplicationModel();
+            var dict_jaq = new Dictionary<int, JobApplicationQuestionModel>();
+            var hs_qr = new HashSet<int>();
+            var hs_qv = new HashSet<int>();
+            var dict_l = new Dictionary<int, JobLocationModel>();
             foreach (var row in data)
             {
-                if (!map.TryGetValue(row.jaq.ID, out var jaq))
+                if (!dict_jaq.TryGetValue(row.jaq.ID, out var jaq))
                 {
                     jaq = _mapper.Map<JobApplicationQuestionModel>(row.jaq);
-                    map.Add(row.jaq.ID, jaq);
+                    dict_jaq.Add(row.jaq.ID, jaq);
                 }
 
-                if (row.qr != null)
+                if (row.qr != null && !hs_qr.Contains(row.qr.ID))
                 {
+                    hs_qr.Add(row.qr.ID);
                     jaq.Responses.Add(_mapper.Map<QuestionResponseModel>(row.qr));
-                    map[row.jaq.ID] = jaq;
+                    dict_jaq[row.jaq.ID] = jaq;
                 }
 
-                if (row.qv != null)
+                if (row.qv != null && !hs_qv.Contains(row.qv.ID))
                 {
+                    hs_qv.Add(row.qv.ID);
                     jaq.ValidationRules.Add(_mapper.Map<QuestionValidationModel>(row.qv));
-                    map[row.jaq.ID] = jaq;
+                    dict_jaq[row.jaq.ID] = jaq;
+                }
+
+                if (row.l != null && !dict_l.ContainsKey(row.l.ID))
+                {
+                    dict_l.Add(row.l.ID, _mapper.Map<JobLocationModel>(row.l));
                 }
             }
-            await Task.FromResult(0);
-            var job = data.First().jaq.Job;
-            return new GetJobApplicationModel
+            var job = _mapper.Map<JobModel>(first.j);
+            job.Locations = dict_l.Values.ToList();
+            return await Task.FromResult(new GetJobApplicationModel
             {
-                JobName = job.Name,
-                CompanyGitHubLogin = job.Company.GitHubLogin,
-                Questions = map.Values.ToList()
-            };
+                Job = job,
+                Questions = dict_jaq.Values.ToList()
+            }); 
         }
     }
 }

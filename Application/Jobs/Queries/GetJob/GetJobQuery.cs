@@ -38,6 +38,7 @@ namespace Application.Jobs.Queries.GetJob
                        join sl in _context.SeniorityLevels.AsEnumerable() on j.SeniorityLevelID equals sl.ID
                        join jt in _context.JobTypes.AsEnumerable() on j.JobTypeID equals jt.ID
                        join c in _context.Companies.AsEnumerable() on j.CompanyID equals c.ID
+                       join u in _context.Users.AsEnumerable() on j.UserID equals u.ID
                        join l in _context.JobLocations.AsEnumerable() on j.ID equals l.JobID
                        join ja in _context.JobApplications.AsEnumerable() on new { JobID = j.ID, request.UserID } equals new { ja.JobID, ja.UserID } into tmp_ja
                        from ja in tmp_ja.DefaultIfEmpty()

@@ -8,8 +8,7 @@ namespace Application.Jobs.Queries.GetJobApplication
 {
     public class GetJobApplicationModel 
     {
-        public string JobName { get; set; }
-        public string CompanyGitHubLogin { get; set; }
+        public JobModel Job { get; set; }
         public List<JobApplicationQuestionModel> Questions { get; set; }
     }
 }

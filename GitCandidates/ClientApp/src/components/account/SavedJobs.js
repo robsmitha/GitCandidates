@@ -5,7 +5,7 @@ import { NavAccountMenu } from './NavAccountMenu';
 import { userService } from '../../services/user.service'
 import GitHubUser from '../../helpers/GitHubUser';
 import Loading from '../../helpers/Loading';
-import Octicon, { Star } from '@primer/octicons-react';
+import Octicon, { Star, Heart } from '@primer/octicons-react';
 
 export class SavedJobs extends Component {
     constructor(props) {
@@ -109,13 +109,16 @@ export class SavedJobs extends Component {
                             </div>
                             <p className="mb-0">
                                 {a.jobCompanyGitHubLogin}
-                                <button className="btn btn-link btn-sm float-right pr-0"
+                                <button className="btn btn-link btn-sm text-danger float-right pr-0"
                                     type="button"
                                     data-job-id={a.jobID}
                                     data-name={a.jobName}
                                     data-company={a.jobCompanyGitHubLogin}
                                     onClick={setSavedJob}>
-                                    <Octicon icon={Star} size="small" /> Unsave
+                                    <Octicon icon={Heart} size="small" />
+                                    <span className="sr-only">
+                                        Unsave
+                                    </span>
                                 </button>
                             </p>
                         </div>

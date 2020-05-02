@@ -34,7 +34,7 @@ namespace GitCandidates.Controllers
         }
 
         [HttpGet("GetJob/{id}")]
-        public async Task<ActionResult<List<GetJobModel>>> GetJob(int id)
+        public async Task<ActionResult<GetJobModel>> GetJob(int id)
         {
             return Ok(await _mediator.Send(new GetJobQuery(id, _identity.ClaimID)));
         }

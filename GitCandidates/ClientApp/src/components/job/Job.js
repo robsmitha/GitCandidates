@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import { jobService } from '../../services/job.service';
 import { userService } from '../../services/user.service';
 import { AuthConsumer, AuthContext } from './../../context/AuthContext';
-import Octicon, { SignIn, Star, Check, History, Pin, Pencil, Checklist, Jersey, Pulse, ChevronRight } from '@primer/octicons-react';
+import Octicon, { SignIn, Star, Check, History, Pin, Pencil, Checklist, Jersey, Pulse, ChevronRight, Heart, HeartOutline, Code } from '@primer/octicons-react';
 import Loading from '../../helpers/Loading';
 import { Row, Col } from 'reactstrap';
 
@@ -48,6 +48,9 @@ export class Job extends Component {
     }
 
     setSavedJob = event => {
+
+        if (!this.state.loggedIn) this.props.history.push('/oauth')
+
         let btn = this.getButton(event.target)
         let id = Number(btn.value);
         let data = {
@@ -80,9 +83,12 @@ export class Job extends Component {
                             </div>
                             <div className="col-md-3">
                                 <div className="mb-3">
+                                    <h4 className="mb-1 h6 text-primary text-uppercase">
+                                        Need
+                                    </h4>
                                     <div>
                                         <p className="h5 mb-3">
-                                            Overview
+                                            Who we need
                                         </p>
                                     </div>
                                     {job == null
@@ -92,9 +98,12 @@ export class Job extends Component {
                                         </p>}
                                 </div>
                                 <div className="mb-3">
+                                    <h4 className="mb-1 h6 text-primary text-uppercase">
+                                        Stack
+                                    </h4>
                                     <div>
                                         <p className="h5 mb-3">
-                                            Our stack
+                                            Our code
                                         </p>
                                     </div>
                                     {skills === null
@@ -102,6 +111,9 @@ export class Job extends Component {
                                         : Job.renderSkills(skills)}
                                 </div>
                                 <div className="mb-3">
+                                    <h4 className="mb-1 h6 text-primary text-uppercase">
+                                        Approach
+                                    </h4>
                                     <div>
                                         <p className="h5 mb-3">
                                             Our methods
@@ -123,23 +135,23 @@ export class Job extends Component {
         return (
             <div>
                 <div className="mb-3">
+                    <h1 className="mb-1 h6 text-primary text-uppercase">
+                        {job.companyGitHubLogin}
+                    </h1>
                     <Row>
                         <Col>
-                            <h1 className="h3">
+                            <h2 className="h3 mb-0">
                                 {job.name}
-                            </h1>
+                            </h2>
                         </Col>
                         <Col xs="auto">
-                            <button type="button" className={job.savedJobID > 0 ? 'btn btn-dark btn-sm rounded-circle' : 'btn btn-outline-dark btn-sm rounded-circle'} value={job.savedJobID} onClick={setSavedJob} hidden={!loggedIn}>
-                                <Octicon icon={Star} size="small" />
+                            <button type="button" className={'btn btn-sm rounded-circle text-danger py-0'} value={job.savedJobID} onClick={setSavedJob}>
+                                <Octicon icon={job.savedJobID > 0 ? Heart : HeartOutline} size="medium" />
                                 <span className="sr-only">{job.savedJobID > 0 ? 'Unsave' : 'Save'}</span>
                             </button>
                         </Col>
                     </Row>
-                    <strong className="d-block">
-                        {job.companyGitHubLogin}
-                    </strong>
-                    <small className="d-block text-muted">
+                    <small className="d-block text-muted mb-2">
                         {job.locations.map((l, index) =>
                             <span key={l.id}>
                                 <span>{l.location}</span>
@@ -149,6 +161,7 @@ export class Job extends Component {
                             </span>
                         )}
                     </small>
+
                 </div>
 
                 <div hidden={job.isAcceptingApplications}>
@@ -156,7 +169,7 @@ export class Job extends Component {
                 </div>
 
 
-                <div className="mb-3">
+                <div className="mb-3 small">
                     <div dangerouslySetInnerHTML={{
                         __html: job.postHTML
                     }}></div>
@@ -167,7 +180,7 @@ export class Job extends Component {
                         <Octicon icon={SignIn} size="small" />&nbsp;Sign in to apply
                     </Link>
 
-                    <Link className="btn btn-dark" to={'/apply/:id'.replace(':id', job.id)} hidden={job.userHasActiveApplication || !loggedIn}>
+                    <Link className="btn btn-primary" to={'/apply/:id'.replace(':id', job.id)} hidden={job.userHasActiveApplication || !loggedIn}>
                         <Octicon icon={Pencil} size="small" />&nbsp;Apply now
                     </Link>
 
@@ -176,8 +189,8 @@ export class Job extends Component {
                     </Link>
                 </div>
 
-                <div className="mb-3">
-                    <p className="h5 mb-2">
+                <div className="mb-3 small">
+                    <p className="h6 mb-2">
                         Requirements
                     </p>
                     <ol className="fa-ul list-unstyled">
@@ -192,8 +205,8 @@ export class Job extends Component {
                 </div>
 
 
-                <div className="mb-3">
-                    <p className="h5 mb-2">
+                <div className="mb-3 small">
+                    <p className="h6 mb-2">
                         Responsibilities
                     </p>
                     <ol className="list-unstyled">
@@ -208,7 +221,61 @@ export class Job extends Component {
                 </div>
 
                 <div className="mb-3">
-                    <p className="h5 mb-2">
+                    <Row>
+                        <Col xs="4">
+                            <strong className="d-block">
+                                Job Type
+                            </strong>
+                            <small className="d-block text-muted">
+                                {job.jobTypeName}
+                            </small>
+                        </Col>
+                        <Col md="4">
+                            <strong className="d-block">
+                                Seniority Level
+                            </strong>
+                            <small className="d-block text-muted">
+                                {job.seniorityLevelName}
+                            </small>
+                        </Col>
+                        <Col md="4">
+                            <strong className="d-block">
+                                Remote
+                            </strong>
+                            <small className="d-block text-muted">
+                                {job.allowRemote === null ? 'Not specified' : job.allowRemote === true ? 'Yes' : 'No'}
+                            </small>
+                        </Col>
+                        <Col md="4">
+                            <strong className="d-block">
+                                Team Size
+                            </strong>
+                            <small className="d-block text-muted">
+                                {job.teamSize}
+                            </small>
+                        </Col>
+                        <Col md="4">
+                            <strong className="d-block">
+                                Salary
+                            </strong>
+                            <small className="d-block text-muted">
+                                {job.minSalary} - {job.maxSalary}
+                            </small>
+                        </Col>
+                        <Col md="4">
+                            <strong className="d-block">
+                                Travel
+                            </strong>
+                            <small className="d-block text-muted">
+                                {job.travel}
+                            </small>
+                        </Col>
+                    </Row>
+                </div>
+
+
+                <div className="mb-3 small text-muted">
+                    <p className="h6 mb-2">
                         Employer Benefits
                     </p>
                     <ol className="list-unstyled">
@@ -230,15 +297,15 @@ export class Job extends Component {
             <AuthConsumer>
                 {({ auth }) => (
                     <div>
-                        <div hidden={!auth}>
-                            <small className="text-muted">You have {skills.filter(s => s.userHasSkill).length} out of {skills.length} skills.</small>
-                        </div>
                         {skills.map((s, index) =>
-                            <div className={auth && s.userHasSkill ? 'text-primary' : ''} key={index}>
-                                {<Octicon icon={auth && s.userHasSkill ? Check : Pin} />}&nbsp;
+                            <div className={auth && s.userHasSkill ? 'text-success' : 'text-dark'} key={index}>
+                                {<Octicon icon={auth && s.userHasSkill ? Check : Code} />}&nbsp;
                                 {s.skillName}
                             </div>
                         )}
+                        <div hidden={!auth}>
+                            <small className="text-muted">You have {skills.filter(s => s.userHasSkill).length} out of {skills.length} skills.</small>
+                        </div>
                     </div>
                 )}
             </AuthConsumer>

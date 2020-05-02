@@ -5,6 +5,7 @@ import { AuthConsumer } from '../../context/AuthContext';
 import { NavAccountMenu } from './NavAccountMenu';
 import Loading from '../../helpers/Loading';
 import GitHubUser from '../../helpers/GitHubUser';
+import Octicon, { Trashcan } from '@primer/octicons-react';
 
 export class Account extends Component {
 
@@ -39,10 +40,17 @@ export class Account extends Component {
             }))
     }
 
+    getButton(target) {
+        return target instanceof HTMLButtonElement && target.getAttribute('type') == 'button'
+            ? target
+            : this.getButton(target.parentElement)
+    }
+
     confirmWithdrawlApplication = event => {
-        let name = event.target.getAttribute('data-name')
-        let company = event.target.getAttribute('data-company')
-        let id = Number(event.target.value)
+        let btn = this.getButton(event.target)
+        let name = btn.getAttribute('data-name')
+        let company = btn.getAttribute('data-company')
+        let id = Number(btn.value)
         if (window.confirm(`Are you sure you want to withdaw application #${id} for ${name} at ${company}?`)) {
             userService.withdrawApplication({
                 id: id
@@ -118,7 +126,12 @@ export class Account extends Component {
                             </div>
                             <p className="mb-0">
                                 {a.jobCompanyGitHubLogin}
-                                <button className="btn btn-link btn-sm text-danger float-right pr-0" type="button" value={a.id} data-name={a.jobName} data-company={a.jobCompanyGitHubLogin} onClick={confirmWithdrawlApplication}>Withdraw</button>
+                                <button className="btn btn-link btn-sm text-muted float-right pr-0" type="button" value={a.id} data-name={a.jobName} data-company={a.jobCompanyGitHubLogin} onClick={confirmWithdrawlApplication}>
+                                    <Octicon icon={Trashcan} size="small" />
+                                    <span className="sr-only">
+                                        Withdraw
+                                    </span>
+                                </button>
                             </p>
                             <small className="text-muted">
                                 <strong>Status:&nbsp;</strong>
