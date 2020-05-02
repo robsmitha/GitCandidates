@@ -30,13 +30,34 @@ namespace Domain.Entities
         /// <summary>
         /// Job post full content
         /// </summary>
-        public string Post { get; set; }
+        public string PostHTML { get; set; }
 
         /// <summary>
         /// Indicates datetime the job should be or was removed
         /// if null, nothing happens
         /// </summary>
         public DateTime? ExpiresAt { get; set; }
+
+        public string TeamSize { get; set; }
+        public string Travel { get; set; }
+
+        public bool? AllowRemote { get; set; }
+        public int? MinSalary { get; set; }
+        public int? MaxSalary { get; set; }
+
+        /// <summary>
+        /// Seniority Level for job (i.e. Intern, Junior, Middle, Senior, Lead)
+        /// </summary>
+        public int SeniorityLevelID { get; set; }
+        [ForeignKey("SeniorityLevelID")]
+        public SeniorityLevel SeniorityLevel { get; set; }
+
+        /// <summary>
+        /// Occupation type for job (i.e. Full-time, Part-time, Internship)
+        /// </summary>
+        public int JobTypeID { get; set; }
+        [ForeignKey("JobTypeID")]
+        public JobType JobType { get; set; }
     }
     public static class JobExtensions
     {

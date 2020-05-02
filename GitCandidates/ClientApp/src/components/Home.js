@@ -48,7 +48,9 @@ export class Home extends Component {
                 const updatedControls = {
                     ...this.state.formControls
                 }
-                updatedControls.location.value = data.displayLocation;
+                if (data.displayLocation && data.displayLocation.length > 0)
+                    updatedControls.location.value = data.displayLocation;
+
                 this.setState({
                     jobs: data.jobs,
                     displayLocation: data.displayLocation,

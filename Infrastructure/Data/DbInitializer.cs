@@ -210,38 +210,119 @@ namespace Infrastructure.Data
             context.JobApplicationStatusTypes.AddRange(jobApplicationStatusTypes);
             context.SaveChanges();
 
+            var intern = new SeniorityLevel
+            {
+                Name = "Intern",
+                Description = "Internship level"
+            };
+            var entry = new SeniorityLevel
+            {
+                Name = "Entry",
+                Description = "Entry level"
+            };
+            var midLvl = new SeniorityLevel
+            {
+                Name = "Mid-level",
+                Description = "Middle level"
+            };
+            var seniorLvl = new SeniorityLevel
+            {
+                Name = "Senior",
+                Description = "Senior level"
+            };
+            var lead = new SeniorityLevel
+            {
+                Name = "Lead",
+                Description = "Senior level"
+            };
+            var architect = new SeniorityLevel
+            {
+                Name = "Architect",
+                Description = "Architect level"
+            };
+            context.SeniorityLevels.AddRange(new [] { intern, entry, midLvl, seniorLvl, lead, architect });
+            var fullTime = new JobType
+            {
+                Name = "Full-time",
+                Description = "Full-time"
+            };
+            var partTime = new JobType
+            {
+                Name = "Part-time",
+                Description = "Part-time"
+            };
+            var contract = new JobType
+            {
+                Name = "Contract",
+                Description = "Contract"
+            };
+            context.JobTypes.AddRange(new[] { fullTime, partTime, contract });
+            context.SaveChanges();
 
+            var postHTML = "<h4 id=&quot;summary&quot;>Job Summary</h4> <p>We develop a .NET software application implements a Domain Driven Design (DDD) pattern to help solve enterprise level problems.</p><p>We're looking for talented engineers to join our team.</p><strong>If this job sounds like you apply today!</strong>";
             var fullstack = new Job
             {
                 Name = "Full Stack Engineer",
-                Description = "We are seeking a Full Stack Engineer for Lorem ipsum dolor sit amet, consectetur adipisicing elit. A deserunt neque tempore recusandae animi soluta quasi? Asperiores rem dolore eaque vel, porro, soluta unde debitis aliquam laboriosam. Repellat explicabo, maiores! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis optio neque consectetur consequatur magni in nisi, natus beatae quidem quam odit commodi ducimus totam eum, alias, adipisci nesciunt voluptate. Voluptatum.",
+                Description = "A .NET MVC frontend and MSSQL backend",
                 CompanyID = gitCandidates.ID,
                 UserID = robsmitha.ID,
-                PostAt = DateTime.Now.AddMinutes(5)
+                PostAt = DateTime.Now.AddMinutes(5),
+                PostHTML = postHTML,
+                AllowRemote = false,
+                TeamSize = "10-50 People",
+                MinSalary = 90000,
+                MaxSalary = 120000,
+                Travel = "No",
+                SeniorityLevelID = midLvl.ID,
+                JobTypeID = fullTime.ID,
             };
             var frontend = new Job
             {
                 Name = "Front End Engineer",
-                Description = "We are looking for a Front End Engineer for Lorem ipsum dolor sit amet, consectetur adipisicing elit. A deserunt neque tempore recusandae animi soluta quasi? Asperiores rem dolore eaque vel, porro, soluta unde debitis aliquam laboriosam. Repellat explicabo, maiores! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis optio neque consectetur consequatur magni in nisi, natus beatae quidem quam odit commodi ducimus totam eum, alias, adipisci nesciunt voluptate. Voluptatum.",
+                Description = "A frontend in ReactJS with Bootstrap4.",
                 CompanyID = gitCandidates.ID,
                 PostAt = DateTime.Now.AddDays(-2),
-                UserID = robsmitha.ID
+                UserID = robsmitha.ID,
+                PostHTML = postHTML,
+                AllowRemote = true,
+                TeamSize = "1-10 People",
+                MinSalary = 70000,
+                MaxSalary = 86000,
+                Travel = "No",
+                SeniorityLevelID = entry.ID,
+                JobTypeID = partTime.ID,
             };
             var senior = new Job
             {
-                Name = "Senior Software Engineer",
-                Description = "Are you a Senior Software for Lorem ipsum dolor sit amet, consectetur adipisicing elit. A deserunt neque tempore recusandae animi soluta quasi? Asperiores rem dolore eaque vel, porro, soluta unde debitis aliquam laboriosam. Repellat explicabo, maiores! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis optio neque consectetur consequatur magni in nisi, natus beatae quidem quam odit commodi ducimus totam eum, alias, adipisci nesciunt voluptate. Voluptatum.",
+                Name = "Senior Software Architect",
+                Description = "Senior Architect Angular frontend and CockroachDB backend",
                 CompanyID = gitCandidates.ID,
                 PostAt = DateTime.Now.AddDays(-4),
-                UserID = robsmitha.ID
+                UserID = robsmitha.ID,
+                PostHTML = postHTML,
+                AllowRemote = false,
+                TeamSize = "50-100 People",
+                MinSalary = 75000,
+                MaxSalary = 96000,
+                Travel = "No",
+                SeniorityLevelID = seniorLvl.ID,
+                JobTypeID = fullTime.ID,
             };
             var cloud = new Job
             {
                 Name = "Cloud Engineer",
-                Description = "Come join our team of cloud engineering developers Lorem ipsum dolor sit amet, consectetur adipisicing elit. A deserunt neque tempore recusandae animi soluta quasi? Asperiores rem dolore eaque vel, porro, soluta unde debitis aliquam laboriosam. Repellat explicabo, maiores! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis optio neque consectetur consequatur magni in nisi, natus beatae quidem quam odit commodi ducimus totam eum, alias, adipisci nesciunt voluptate. Voluptatum.",
+                Description = "Create and manage CI/CD pipelines and infrastructure.",
                 CompanyID = gitCandidates.ID,
                 PostAt = DateTime.Now.AddDays(-8),
-                UserID = robsmitha.ID
+                UserID = robsmitha.ID,
+                PostHTML = postHTML,
+                AllowRemote = false,
+                TeamSize = "50-100 People",
+                MinSalary = 65000,
+                MaxSalary = 86000,
+                Travel = "No",
+                SeniorityLevelID = lead.ID,
+                JobTypeID = fullTime.ID,
             };
             var jobs = new List<Job>
             {
@@ -328,6 +409,92 @@ namespace Infrastructure.Data
                         JobID = job.ID,
                         QuestionID = numberResponseQ.ID,
                         DisplayOrder = 2
+                    }
+                });
+                context.JobBenefits.AddRange(new[] {
+                    new JobBenefit
+                    {
+                        JobID = job.ID,
+                        Name = "Exciting open source projects",
+                        Description = "We don’t work on dull and boring projects. Ever."
+                    },
+                    new JobBenefit
+                    {
+                        JobID = job.ID,
+                        Name = "Flexible working hours",
+                        Description = "Possibility for remote work, home office, and flexible hours during the day."
+                    },
+                    new JobBenefit
+                    {
+                        JobID = job.ID,
+                        Name = "Learning and development",
+                        Description = "Subsidized conferences, classes, and events."
+                    },
+                    new JobBenefit
+                    {
+                        JobID = job.ID,
+                        Name = "Health & vision insurance",
+                        Description = "Health and vision insurance."
+                    }
+                });
+                context.JobRequirements.AddRange(new[] {
+                    new JobRequirement
+                    {
+                        JobID = job.ID,
+                        Name = "Programming experience",
+                        Description = "We are looking for people who are familiar with or want to learn .NET quickly'",
+                    },
+                    new JobRequirement
+                    {
+                        JobID = job.ID,
+                        Name = "Flexibility",
+                        Description = "A quick learner who can and wants to switch between programming languages depending on project requirements."
+                    },
+                    new JobRequirement
+                    {
+                        JobID = job.ID,
+                        Name = "Problem solver",
+                        Description = "We appreciate people who work smart – and hard."
+                    }
+                });
+                context.JobResponsibilities.AddRange(new[] {
+                    new JobResponsibility
+                    {
+                        JobID = job.ID,
+                        Name = "Design and build",
+                        Description = "Design and implement new features and enhance existing functionalities according to business specifications.",
+                    },
+                    new JobResponsibility
+                    {
+                        JobID = job.ID,
+                        Name = "Ownership",
+                        Description = "Participate in the whole sprint process for product development."
+                    },
+                    new JobResponsibility
+                    {
+                        JobID = job.ID,
+                        Name = "Coding standards",
+                        Description = "Ensure that your code meets software development and quality standards and fits into the continuous release process."
+                    }
+                });
+                context.JobMethods.AddRange(new[] {
+                    new JobMethod
+                    {
+                        JobID = job.ID,
+                        Name = "Agile software development",
+                        Description = "We are agile software developers.",
+                    },
+                    new JobMethod
+                    {
+                        JobID = job.ID,
+                        Name = "SCRUM lifecycles",
+                        Description = "We iterate SCRUM lifecycles to develop our software."
+                    },
+                    new JobMethod
+                    {
+                        JobID = job.ID,
+                        Name = "CI/CD",
+                        Description = "Continuous integration and deployment."
                     }
                 });
             }
@@ -450,6 +617,9 @@ namespace Infrastructure.Data
                     SkillID = javaScript.ID
                 },
             });
+
+            
+
             context.SaveChanges();
             #endregion
 

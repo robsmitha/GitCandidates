@@ -2,9 +2,10 @@
 import { Redirect, Link } from 'react-router-dom';
 import { jobService } from '../../services/job.service';
 import { userService } from '../../services/user.service';
-import { AuthConsumer } from './../../context/AuthContext';
-import Octicon, { Briefcase, Pencil, SignIn, Star, HeartOutline, Heart, PrimitiveDot, PrimitiveDotStroke } from '@primer/octicons-react';
+import { AuthConsumer, AuthContext } from './../../context/AuthContext';
+import Octicon, { SignIn, Star, Check, History, Pin, Pencil, Checklist, Jersey, Pulse, ChevronRight } from '@primer/octicons-react';
 import Loading from '../../helpers/Loading';
+import { Row, Col } from 'reactstrap';
 
 export class Job extends Component {
 
@@ -13,11 +14,15 @@ export class Job extends Component {
         this.state = {
             id: this.props.match.params.id,
             job: null,
-            skills: null
+            skills: null,
+            loggedIn: false
         }
     }
 
     componentDidMount() {
+        this.setState({
+            loggedIn: this.context.auth
+        })
         this.populateJob()
         this.populateJobSkills()
     }
@@ -62,7 +67,7 @@ export class Job extends Component {
     }
 
     renderLayout() {
-        const { job, skills } = this.state
+        const { job, skills, loggedIn } = this.state
         return (
             <div>
                 <div className="py-3">
@@ -70,17 +75,41 @@ export class Job extends Component {
                         <div className="row">
                             <div className="col-md">
                                 {job === null
-                                    ? <Loading />
-                                    : Job.renderJob(job, this.setSavedJob)}
+                                    ? <Loading message="Loading opportunity, please wait." />
+                                    : Job.renderJob(job, loggedIn, this.setSavedJob)}
                             </div>
-                            <div className="col-md-4">
-                                <div className="card mb-3">
-                                    <h5 className="card-header bg-dark text-white">Job Skills</h5>
-                                    <div className="card-body">
-                                        {skills === null
-                                            ? <Loading message="Loading skills" />
-                                            : Job.renderSkills(skills)}
+                            <div className="col-md-3">
+                                <div className="mb-3">
+                                    <div>
+                                        <p className="h5 mb-3">
+                                            Overview
+                                        </p>
                                     </div>
+                                    {job == null
+                                        ? <Loading />
+                                        : <p className="lead mb-3">
+                                            {job.description}
+                                        </p>}
+                                </div>
+                                <div className="mb-3">
+                                    <div>
+                                        <p className="h5 mb-3">
+                                            Our stack
+                                        </p>
+                                    </div>
+                                    {skills === null
+                                        ? <Loading />
+                                        : Job.renderSkills(skills)}
+                                </div>
+                                <div className="mb-3">
+                                    <div>
+                                        <p className="h5 mb-3">
+                                            Our methods
+                                        </p>
+                                    </div>
+                                    {job === null
+                                        ? <Loading />
+                                        : Job.renderMethods(job.methods)}
                                 </div>
                             </div>
                         </div>
@@ -90,13 +119,23 @@ export class Job extends Component {
         )
     }
 
-    static renderJob(job, setSavedJob) {
+    static renderJob(job, loggedIn, setSavedJob) {
         return (
             <div>
-                <div className="text-center">
-                    <h1 className="h3">
-                        {job.name}
-                    </h1>
+                <div className="mb-3">
+                    <Row>
+                        <Col>
+                            <h1 className="h3">
+                                {job.name}
+                            </h1>
+                        </Col>
+                        <Col xs="auto">
+                            <button type="button" className={job.savedJobID > 0 ? 'btn btn-dark btn-sm rounded-circle' : 'btn btn-outline-dark btn-sm rounded-circle'} value={job.savedJobID} onClick={setSavedJob} hidden={!loggedIn}>
+                                <Octicon icon={Star} size="small" />
+                                <span className="sr-only">{job.savedJobID > 0 ? 'Unsave' : 'Save'}</span>
+                            </button>
+                        </Col>
+                    </Row>
                     <strong className="d-block">
                         {job.companyGitHubLogin}
                     </strong>
@@ -110,78 +149,116 @@ export class Job extends Component {
                             </span>
                         )}
                     </small>
-                    <hr className="w-25" />
                 </div>
-                <div className="text-center mb-3">
-                    {job.isAcceptingApplications
-                        ? Job.renderApplyMessage(job, setSavedJob)
-                        : <h5 className="text-muted">This job is no longer accepting applications.</h5>}
+
+                <div hidden={job.isAcceptingApplications}>
+                    <h5 className="text-muted">This job is no longer accepting applications.</h5>
                 </div>
-                <p>
-                    {job.description}
-                </p>
+
+
+                <div className="mb-3">
+                    <div dangerouslySetInnerHTML={{
+                        __html: job.postHTML
+                    }}></div>
+                </div>
+
+                <div className="mb-3">
+                    <Link className="btn btn-secondary" to="/oauth" hidden={loggedIn || !job.isAcceptingApplications}>
+                        <Octicon icon={SignIn} size="small" />&nbsp;Sign in to apply
+                    </Link>
+
+                    <Link className="btn btn-dark" to={'/apply/:id'.replace(':id', job.id)} hidden={job.userHasActiveApplication || !loggedIn}>
+                        <Octicon icon={Pencil} size="small" />&nbsp;Apply now
+                    </Link>
+
+                    <Link className="btn btn-success" hidden={!job.userHasActiveApplication} to={'/account'} >
+                        <Octicon icon={History} size="small" />&nbsp;You have an active application.
+                    </Link>
+                </div>
+
+                <div className="mb-3">
+                    <p className="h5 mb-2">
+                        Requirements
+                    </p>
+                    <ol className="fa-ul list-unstyled">
+                        {job.requirements.map((r, index) =>
+                            <li className="mb-1" key={index}>
+                                <Octicon icon={ChevronRight} />
+                                <strong className="mb-2 ml-2">{r.name}</strong>
+                                <small className="d-block ml-4">{r.description}</small>
+                            </li>
+                        )}
+                    </ol>
+                </div>
+
+
+                <div className="mb-3">
+                    <p className="h5 mb-2">
+                        Responsibilities
+                    </p>
+                    <ol className="list-unstyled">
+                        {job.responsibilities.map((r, index) =>
+                            <li className="mb-1" key={index}>
+                                <Octicon icon={ChevronRight} />
+                                <strong className="mb-2 ml-2">{r.name}</strong>
+                                <small className="d-block ml-4">{r.description}</small>
+                            </li>
+                        )}
+                    </ol>
+                </div>
+
+                <div className="mb-3">
+                    <p className="h5 mb-2">
+                        Employer Benefits
+                    </p>
+                    <ol className="list-unstyled">
+                        {job.benefits.map((r, index) =>
+                            <li className="mb-1" key={index}>
+                                <Octicon icon={ChevronRight} />
+                                <strong className="mb-2 ml-2">{r.name}</strong>
+                                <small className="d-block ml-4">{r.description}</small>
+                            </li>
+                        )}
+                    </ol>
+                </div>
             </div>
             )
     }
+
     static renderSkills(skills) {
         return (
-            <div>
-                <ul className="list-unstyled">
-                    {skills.map(s =>
-                        <li key={s.id}>
-                            <Octicon icon={s.userHasSkill ? PrimitiveDot : PrimitiveDotStroke} size="small" />&nbsp;
-                        {s.skillName}
-                        </li>
-                    )}
-                </ul>
-                <AuthConsumer>
-                    {({ auth }) => (
-                        <div>
-                            {auth
-                                ? <small className="text-muted">You have {skills.filter(s => s.userHasSkill).length} out of {skills.length} skills.</small>
-                                : <span></span>}
+            <AuthConsumer>
+                {({ auth }) => (
+                    <div>
+                        <div hidden={!auth}>
+                            <small className="text-muted">You have {skills.filter(s => s.userHasSkill).length} out of {skills.length} skills.</small>
                         </div>
-                    )}
-                </AuthConsumer>
-
-            </div>
-            )
-    }
-    static renderApplyMessage(job, setSavedJob) {
-        return (
-            <div>
-                <AuthConsumer>
-                    {({ auth }) => (
-                        <div>
-                            {!auth
-                                ? <Link className="btn btn-link text-decoration-none" to="/oauth"><Octicon icon={SignIn} size="small" /> Sign in to apply.</Link>
-                                : Job.renderAuthArea(job, setSavedJob)}
-                        </div>
-                    )}
-                </AuthConsumer>
-            </div>
-            )
+                        {skills.map((s, index) =>
+                            <div className={auth && s.userHasSkill ? 'text-primary' : ''} key={index}>
+                                {<Octicon icon={auth && s.userHasSkill ? Check : Pin} />}&nbsp;
+                                {s.skillName}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </AuthConsumer>
+        )
     }
 
-    static renderAuthArea(job, setSavedJob) {
+    static renderMethods(methods) {
         return (
-            <div>
-                <div className="btn-group">
-                    <Link className="btn btn-dark" to={'/apply/:id'.replace(':id', job.id)} hidden={!job.userCanApply}>
-                        <Octicon icon={Pencil} size="small" /> Apply
-                    </Link>
-                    <button type="button" className="btn btn-outline-dark" value={job.savedJobID} onClick={setSavedJob}>
-                        <Octicon icon={Star} size="small" /> {job.savedJobID > 0 ? 'Unsave' : 'Save'}
-                    </button>
-                </div>
-                <div className="mt-2" hidden={job.userCanApply}>
-                    <h5 className="text-muted">You have an active application.</h5>
-                    <small className="text-muted">
-                        Applications are displayed on your&nbsp;<Link to={'/account'}>account.</Link>
-                    </small>
-                </div>
-            </div>
+            <ul className="list-unstyled">
+                {methods.map((r, index) =>
+                    <li className="mb-1" key={index}>
+                        <Octicon icon={Pin} />
+                        <strong className="mb-2 ml-2">{r.name}</strong>
+                        <small className="d-block ml-4">{r.description}</small>
+                    </li>
+                )}
+            </ul>
         )
     }
 
 }
+
+Job.contextType = AuthContext

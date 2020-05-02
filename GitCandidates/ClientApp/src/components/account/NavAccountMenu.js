@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import Octicon, { Pencil, Star, Person, Code, Settings, Gear, InternalRepo } from '@primer/octicons-react';
+import Octicon, { Star, Gear, InternalRepo, Clippy } from '@primer/octicons-react';
 
 export class NavAccountMenu extends Component {
     constructor(props) {
@@ -11,7 +11,7 @@ export class NavAccountMenu extends Component {
         return (
             <nav className="nav nav-tabs nav-fill mb-2">
                 <NavLink activeClassName="active" to="/account" className="nav-item nav-link">
-                    <Octicon icon={Pencil} size="small" />&nbsp;
+                    <Octicon icon={Clippy} size="small" />&nbsp;
                     Applications
                 </NavLink>
                 <NavLink activeClassName="active" to="/saved-jobs" className="nav-item nav-link">

@@ -114,7 +114,7 @@ export class OAuth extends Component {
                                             <p>
                                                 Finding the perfect job octo be easy.
                                             </p>
-                                            <ol className="fa-ul list-unstyled">
+                                            <ol className="list-unstyled">
                                                 <li className="mb-3">
                                                     <Octicon icon={Lock} />
                                                     <strong className="mb-2 ml-2">Secure GitHub access</strong>
