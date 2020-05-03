@@ -1,0 +1,46 @@
+<header id="site_header">
+  <nav id="main_nav" class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand mr-auto mr-lg-0" [routerLink]="['/']" (click)="collapse()">Portal</a>
+      <button class="navbar-toggler p-0 border-0"
+              type="button"
+              data-toggle="offcanvas"
+              data-target=".navbar-collapse"
+              aria-label="Toggle navigation"
+              [attr.aria-expanded]="isExpanded"
+              (click)="toggle()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="navbar-collapse offcanvas-collapse" [ngClass]="{ open: isExpanded }">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item"
+              [routerLinkActive]="['link-active']"
+              [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link" [routerLink]="['/']" (click)="collapse()">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link" [routerLink]="['/oauth']" (click)="collapse()">Sign in</a>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
+          <li class="nav-item dropdown" [ngClass]="{ show: isDropdownExpanded }">
+            <a class="nav-link dropdown-toggle" (click)="toggleDropdown()" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Account
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" [ngClass]="{ show: isDropdownExpanded }">
+              <h6 class="dropdown-header">Account</h6>
+              <a class="dropdown-item" [routerLink]="['/account']" [routerLinkActive]="['active']" (click)="collapse()">Account</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" [routerLink]="['/sign-out']" [routerLinkActive]="['active']" (click)="collapse()">Sign Out</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+</header>
