@@ -10,8 +10,9 @@ import { HomeComponent } from './home/home.component';
 import { SignOutComponent } from './sign-out/sign-out.component';
 import { OAuthComponent } from './oauth/oauth.component';
 import { AccountComponent } from './account/account.component';
-import { PageHeaderComponent } from './_layout/page-header/page-header.component';
 import { OAuthCallbackComponent } from './oauth-callback/oauth-callback.component';
+import { OrganizationsComponent } from './organizations/organizations.component';
+import { OrganizationComponent } from './organization/organization.component';
 
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
@@ -21,7 +22,7 @@ import { SiteHeaderComponent } from './_layout/site-header/site-header.component
 import { SiteFooterComponent } from './_layout/site-footer/site-footer.component';
 
 
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 
 @NgModule({
   declarations: [
@@ -29,18 +30,20 @@ import { SiteFooterComponent } from './_layout/site-footer/site-footer.component
     SiteLayoutComponent,
     SiteHeaderComponent,
     SiteFooterComponent,
-    PageHeaderComponent,
     HomeComponent,
     OAuthComponent,
     OAuthCallbackComponent,
     SignOutComponent,
-    AccountComponent
+    AccountComponent,
+    OrganizationsComponent,
+    OrganizationComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    FontAwesomeModule,
     RouterModule.forRoot([
       {
         path: '',
@@ -48,6 +51,8 @@ import { SiteFooterComponent } from './_layout/site-footer/site-footer.component
         children: [
           { path: '', component: HomeComponent, pathMatch: 'full' },
           { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+          { path: 'organizations', component: OrganizationsComponent, canActivate: [AuthGuard] },
+          { path: 'organization/:org', component: OrganizationComponent, canActivate: [AuthGuard], pathMatch: 'full' },
         ]
       },
 

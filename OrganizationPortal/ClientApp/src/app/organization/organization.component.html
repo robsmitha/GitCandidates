@@ -1,0 +1,19 @@
+
+  <div class="container mt-3">
+
+    <a [routerLink]="['/']">Home</a> &minus;
+    <a [routerLink]="['/organizations']">Organizations</a> &minus;
+    {{gitHubOrganization.login}}
+
+    <div class="my-3">
+      <h1 class="h3">
+        {{gitHubOrganization.login}}
+      </h1>
+      <p class="text-muted">
+        {{gitHubOrganization.description}}
+      </p>
+    </div>
+
+
+
+  </div>

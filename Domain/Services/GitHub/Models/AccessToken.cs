@@ -1,6 +1,6 @@
 ﻿using Domain.Services.GitHub.Interfaces;
 
-namespace GitCandidates.Services.GitHub.Models
+namespace Domain.Services.GitHub.Models
 {
     public class AccessToken : IAccessToken
     {

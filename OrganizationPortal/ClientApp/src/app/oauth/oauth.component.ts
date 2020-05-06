@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { User } from '../models/user'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { faSignInAlt, faBullhorn, faSearch, faCodeBranch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-oauth',
@@ -12,10 +13,17 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 
 export class OAuthComponent {
+  faSignInAlt = faSignInAlt;
+  faBullhorn = faBullhorn;
+  faCodeBranch = faCodeBranch;
+  faSearch = faSearch;
   oAuthForm;
   user: User
   constructor(private authService: AuthService, private router: Router, private userService: UserService) {
     this.user = new User();
+    if (authService.appUser !== null && authService.appUser.auth) {
+      this.router.navigateByUrl('/account');
+    }
   }
 
 
@@ -32,13 +40,9 @@ export class OAuthComponent {
   }
 
   onSubmit() {
-    console.log(this.gitHubLogin.value)
-    this.router.navigateByUrl('/account');
-    /*
-    this.authService.gitHubOAuthUrl(this.gitHubLogin)
+    this.authService.gitHubOAuthUrl(this.gitHubLogin.value)
       .subscribe(data => {
           window.location.href = data.url
         })
-    */
   }
 }

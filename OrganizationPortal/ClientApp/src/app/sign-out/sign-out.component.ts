@@ -15,4 +15,9 @@ export class SignOutComponent {
   ngOnInit() {
 
   }
+
+  signOut = (event) => {
+    this.authService.setAppUser(null)
+    this.router.navigateByUrl('/')
+  }
 }

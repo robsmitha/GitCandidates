@@ -1,7 +1,7 @@
 ﻿using Domain.Services.GitHub.Interfaces;
 using System.Text;
 
-namespace GitCandidates.Services.GitHub.Models
+namespace Domain.Services.GitHub.Models
 {
     public class OAuthUrlParameters : IOAuthUrlParameters
     {

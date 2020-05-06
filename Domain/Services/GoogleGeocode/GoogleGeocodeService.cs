@@ -1,13 +1,14 @@
-﻿using Domain.Services.GoogleGeocode.Interfaces;
+﻿using Domain.Services.Configuration.Interfaces;
+using Domain.Services.Configuration.Models;
+using Domain.Services.GoogleGeocode.Interfaces;
 using Domain.Services.GoogleGeocode.Models;
-using Infrastructure.Identity;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GitCandidates.Services.GoogleGeocode
+namespace Domain.Services.GoogleGeocode
 {
     public class GoogleGeocodeService : IGoogleGeocodeService
     {

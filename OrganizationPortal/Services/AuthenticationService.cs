@@ -16,7 +16,7 @@ using Domain.Services.Configuration.Interfaces;
 using Domain.Services.Configuration.Models;
 using Domain.Services.GitHub.Models;
 
-namespace GitCandidates.Services
+namespace OrganizationPortal.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
@@ -57,7 +57,8 @@ namespace GitCandidates.Services
         public async Task<IApplicationUser> AuthorizeUser(IGitHubUser gitHubUser, IAccessToken gitHubAccessToken, CancellationToken cancellationToken)
         {
             var user = await FindOrCreateUser(gitHubUser, cancellationToken);
-            return new ApplicationUser(IssueJWTToken(user, gitHubAccessToken.access_token));
+            
+            return new ApplicationUser(IssueJWTToken(user, gitHubAccessToken.access_token), user.GitHubLogin);
         }
 
         public void ClearAuthentication()
@@ -79,9 +80,8 @@ namespace GitCandidates.Services
                     if (user?.ID > 0 && user.JWT == accessToken.access_token 
                         && !string.IsNullOrEmpty(user.GitHubToken))    //todo: check token w github.com
                     {
-                        return new ApplicationUser(IssueJWTToken(user, user.GitHubToken));
+                        return new ApplicationUser(IssueJWTToken(user, user.GitHubToken), user.GitHubLogin);
                     }
-                        
                 }
             }
             catch (Exception) { }

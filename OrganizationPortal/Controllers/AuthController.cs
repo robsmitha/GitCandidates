@@ -2,23 +2,22 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanersNextDoor.Common;
 using Domain.Services.Configuration.Interfaces;
 using Domain.Services.Configuration.Models;
 using Domain.Services.GitHub.Interfaces;
 using Domain.Services.GitHub.Models;
-using GitCandidates.Services;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using OrganizationPortal.Common;
+using OrganizationPortal.Services;
 
-namespace GitCandidates.Controllers
+namespace OrganizationPortal.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
     public class AuthController : ControllerBase
     {
         private readonly IAppSettings _appSettings;
@@ -55,7 +54,7 @@ namespace GitCandidates.Controllers
         public async Task<ActionResult<IApplicationUser>> GitHubOAuthCallback(GenerateOAuthAccessToken authParams)
         {
             var state = HttpContext.Session.Get<string>(IdentityConstants.OAUTH_STATE_SESSION_KEY);
-            if(state != authParams.state) return BadRequest("Failed CSRF protection check.");
+            if (state != authParams.state) return BadRequest("Failed CSRF protection check.");
             var cancellationToken = new CancellationToken();
             var accessToken = await _github.GenerateOAuthAccessToken(authParams);
             HttpContext.Session.Remove(IdentityConstants.OAUTH_STATE_SESSION_KEY);
@@ -72,7 +71,7 @@ namespace GitCandidates.Controllers
             if (!authenticated && token != null)
             {
                 var accessToken = JsonSerializer.Deserialize<JWTAccessToken>(token);
-                if(accessToken.expires_at > DateTime.Now)
+                if (accessToken.expires_at > DateTime.Now)
                 {
                     return await _auth.RefreshJWTToken(accessToken);
                 }

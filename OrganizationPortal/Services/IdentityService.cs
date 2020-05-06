@@ -1,6 +1,5 @@
-﻿using CleanersNextDoor.Common;
+﻿using OrganizationPortal.Common;
 using Domain.Services.GitHub.Interfaces;
-using Domain.Services.GitHub.Models;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -8,8 +7,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading;
+using Domain.Services.GitHub.Models;
 
-namespace CleanersNextDoor.Services
+namespace OrganizationPortal.Services
 {
     public class IdentityService : IIdentityService
     {

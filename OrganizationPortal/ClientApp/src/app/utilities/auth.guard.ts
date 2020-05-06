@@ -8,19 +8,20 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  constructor(private auth: AuthService,
+  constructor(private authService: AuthService,
     private router: Router,
-    private user: UserService) { }
+    private user: UserService) {
+  }
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    //todo: check logged in
-    if (false) {
+    if (this.authService.appUser !== null
+      && this.authService.appUser.auth) {
       return true;
     }
     else {
-      this.router.navigateByUrl('/');
+      this.router.navigateByUrl('/oauth');
       return false;
     }
   }

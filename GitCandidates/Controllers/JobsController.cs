@@ -28,7 +28,7 @@ namespace GitCandidates.Controllers
         }
 
         [HttpPost("SearchJobs")]
-        public async Task<ActionResult<List<SearchJobsModel>>> SearchJobs(SearchJobsRequest request)
+        public async Task<ActionResult<SearchJobsModel>> SearchJobs(SearchJobsRequest request)
         {
             return Ok(await _mediator.Send(new SearchJobsQuery(request)));
         }

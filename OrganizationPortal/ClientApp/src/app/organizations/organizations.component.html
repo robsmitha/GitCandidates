@@ -1,0 +1,23 @@
+
+  <div class="container mt-3">
+
+    <a [routerLink]="['/']">Home</a> &minus; Your organizations
+
+    <div class="my-3">
+      <h1 class="h3">
+        Your organizations
+      </h1>
+      <p class="text-muted">Manage your organizations here.</p>
+    </div>
+
+    <div class="list-group">
+      <a class="list-group-item list-group-item-action d-flex" *ngFor="let row of organizations; let i = index;" [routerLink]="['/organization',row.login]">
+        <img src="{{row.avatar_url}}" class="img-fluid rounded mr-2" style="width: 32px; height: 32px;" />
+        <p class="small">
+          <strong class="d-block text-gray-dark">{{row.login}}</strong>
+          {{row.descriptions}}
+        </p>
+      </a>
+    </div>
+
+  </div>

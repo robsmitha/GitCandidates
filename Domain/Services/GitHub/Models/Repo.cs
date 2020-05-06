@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GitCandidates.Services.GitHub.Models
+namespace Domain.Services.GitHub.Models
 {
     public class Repo : IRepo
     {

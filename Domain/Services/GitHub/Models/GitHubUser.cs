@@ -1,10 +1,9 @@
-﻿using CleanersNextDoor.Services.GitHub.Models;
-using Domain.Services.GitHub.Attributes;
+﻿using Domain.Services.GitHub.Attributes;
 using Domain.Services.GitHub.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace GitCandidates.Services.GitHub.Models
+namespace Domain.Services.GitHub.Models
 {
     public class GitHubUser : IGitHubUser
     {

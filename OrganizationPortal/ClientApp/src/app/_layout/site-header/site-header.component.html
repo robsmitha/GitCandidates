@@ -1,5 +1,5 @@
 <header id="site_header">
-  <nav id="main_nav" class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+  <nav id="main_nav" class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark shadow">
     <div class="container">
       <a class="navbar-brand mr-auto mr-lg-0" [routerLink]="['/']" (click)="collapse()">Portal</a>
       <button class="navbar-toggler p-0 border-0"
@@ -25,17 +25,24 @@
             <a class="nav-link" [routerLink]="['/oauth']" (click)="collapse()">Sign in</a>
           </li>
         </ul>
-
         <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
+          <li class="nav-item dropdown" [ngClass]="{ show: isPlusDropdownExpanded }" hidden="hidden">
+            <a class="nav-link dropdown-toggle" (click)="togglePlusDropdown()" id="newItemDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <fa-icon [icon]="faPlus"></fa-icon>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="newItemDropdown" [ngClass]="{ show: isPlusDropdownExpanded }">
+              <a class="dropdown-item" [routerLink]="['/account']" [routerLinkActive]="['active']" (click)="collapse()">New Job</a>
+            </div>
+          </li>
           <li class="nav-item dropdown" [ngClass]="{ show: isDropdownExpanded }">
             <a class="nav-link dropdown-toggle" (click)="toggleDropdown()" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Account
+              <fa-icon [icon]="faUser"></fa-icon> {{gitHubLogin}}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown" [ngClass]="{ show: isDropdownExpanded }">
-              <h6 class="dropdown-header">Account</h6>
               <a class="dropdown-item" [routerLink]="['/account']" [routerLinkActive]="['active']" (click)="collapse()">Account</a>
+              <a class="dropdown-item" [routerLink]="['/organizations']" [routerLinkActive]="['active']" (click)="collapse()">Organizations</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/sign-out']" [routerLinkActive]="['active']" (click)="collapse()">Sign Out</a>
+              <a class="dropdown-item" [routerLink]="['/sign-out']" (click)="collapse()">Sign out</a>
             </div>
           </li>
         </ul>

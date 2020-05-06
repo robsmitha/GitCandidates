@@ -26,10 +26,24 @@ export class AuthService {
   }
 
   _appUserKey: string = 'appUser';
+
   setAppUser(data) {
     localStorage.setItem(this._appUserKey, JSON.stringify(data))
   }
+
   clearAppUser() {
     localStorage.removeItem(this._appUserKey);
+  }
+
+  get appUser() {
+    var item = localStorage.getItem(this._appUserKey)
+
+    if (item != null && item.length > 0)
+      return JSON.parse(item)
+
+    return {
+      auth: false,
+      gitHubLogin: null
+    }
   }
 }

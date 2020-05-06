@@ -8,4 +8,7 @@ import { Component } from '@angular/core';
 
 export class SiteLayoutComponent {
   title = "Site layout"
+  constructor() {
+    console.log('SiteLayoutComponent initialized')
+  }
 }

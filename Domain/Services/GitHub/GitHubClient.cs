@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace CleanersNextDoor.Services.GitHub
+namespace Domain.Services.GitHub
 {
     public class GitHubClient : IGitHubClient
     {

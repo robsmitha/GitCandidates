@@ -1,10 +1,6 @@
-﻿using Infrastructure.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Domain.Services.Configuration.Interfaces;
 
-namespace GitCandidates.Services
+namespace Domain.Services.Configuration.Models
 {
     public class AppSettings : IAppSettings
     {

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Identity
+﻿namespace Domain.Services.Configuration.Interfaces
 {
     public interface IAppSettings
     {

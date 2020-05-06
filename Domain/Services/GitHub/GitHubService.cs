@@ -1,13 +1,15 @@
-﻿using Domain.Services.GitHub.Interfaces;
-using GitCandidates.Services.GitHub.Models;
-using Infrastructure.Identity;
+﻿using Domain.Services.Configuration.Interfaces;
+using Domain.Services.Configuration.Models;
+using Domain.Services.GitHub.Interfaces;
+using Domain.Services.GitHub.Models;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GitCandidates.Services.GitHub
+namespace Domain.Services.GitHub
 {
     public class GitHubService : IGitHubService
     {
@@ -47,5 +49,13 @@ namespace GitCandidates.Services.GitHub
             return JsonSerializer.Deserialize<AccessToken>(result);
         }
 
+        public async Task<List<Organization>> GetOrganizations(string username, string accessToken)
+        {
+            return await _client.GetAsync<List<Organization>>(accessToken, $"/users/{username}/orgs");
+        }
+        public async Task<IOrganization> GetOrganization(string organization, string accessToken)
+        {
+            return await _client.GetAsync<Organization>(accessToken, $"/orgs/{organization}");
+        }
     }
 }

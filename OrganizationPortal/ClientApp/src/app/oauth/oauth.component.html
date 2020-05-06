@@ -28,7 +28,8 @@
                   </div>
                 </div>
                 <button class="btn btn-dark btn-block" type="submit" [disabled]="oAuthForm.invalid">
-                  Sign In
+                  <fa-icon [icon]="faSignInAlt"></fa-icon>
+                  Continue to GitHub
                 </button>
               </form>
             </div>
@@ -43,19 +44,22 @@
             <div class="col-md-9 col-lg-8 mx-auto">
               <span class="h3">GitCandidates</span>
               <p>
-                Finding the perfect job octo be easy.
+                Finding the perfect dev octo be easy.
               </p>
               <ol class="list-unstyled">
                 <li class="mb-3">
-                  <strong class="mb-2 ml-2">Secure GitHub access</strong>
+                  <fa-icon [icon]="faBullhorn"></fa-icon>
+                  <strong class="mb-2 ml-2">Post jobs</strong>
                   <small class="d-block ml-4">Enter your GitHub username to securely authenticate your GitHub account.</small>
                 </li>
                 <li class="mb-3">
-                  <strong class="mb-2 ml-2">Flexible search tools</strong>
+                  <fa-icon [icon]="faSearch"></fa-icon>
+                  <strong class="mb-2 ml-2">Review applications</strong>
                   <small class="d-block ml-4">Browse job opportunities by company, languages, frameworks and more!</small>
                 </li>
                 <li class="mb-3">
-                  <strong class="mb-2 ml-2">See what you can do</strong>
+                  <fa-icon [icon]="faCodeBranch"></fa-icon>
+                  <strong class="mb-2 ml-2">Collaborative Repos</strong>
                   <small class="d-block ml-4">Each company puts out some repos related to the needs of the positions.</small>
                 </li>
               </ol>
